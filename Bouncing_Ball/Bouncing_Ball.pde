@@ -6,13 +6,13 @@
  */
 
 // constants
-int ENTITY_LIMIT = 3000;
+int ENTITY_LIMIT = 500;
 int WIDTH = 1000;
 int HEIGHT = 800;
 int count = 0;
 int time = 0;
 int ptime;
-float gravity = 1;
+float gravity = 0.5;
 
 Ball[] balls = new Ball[ENTITY_LIMIT];
 
@@ -26,7 +26,7 @@ void setup() {
 }
 
 void draw() {
-  if (mousePressed) {
+  if (mousePressed && count < ENTITY_LIMIT) {
     balls[count] = new Ball(mouseX, mouseY);
     count++;
   }
@@ -36,7 +36,8 @@ void draw() {
   
   // draw balls
   for (int i = 0; i < count; i++) {
-     balls[i].drawBall(gravity);
+     balls[i].drawBall();
+     balls[i].update(gravity);
   }
   
   // switch gravity
