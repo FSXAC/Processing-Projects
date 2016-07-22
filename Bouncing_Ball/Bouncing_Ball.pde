@@ -21,7 +21,7 @@ Ball[] balls = new Ball[ENTITY_LIMIT];
 // object arrays
 void setup() {
   // setup window size
-  size(1000, 800);
+  size(displayWidth, displayHeight);
   
   // setup background;
   background(0);
@@ -40,9 +40,6 @@ void draw() {
   for (int i = 0; i < count; i++) {
      balls[i].drawBall();
      balls[i].update(gravity);
-     //print(balls[i].position.y);
-     //print(", ");
-     //println(balls[i].velocity.y);
      
      for (int j = 0; j < count; j++) {
        if (j != i && collide) {

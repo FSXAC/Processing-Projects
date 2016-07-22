@@ -4,6 +4,7 @@ class Ball {
   int color_R, color_G, color_B;
   float elasticity = random(-0.8, -0.3);
   float friction = 0.05;
+  float distance;
   
   Ball(float x, float y) {
     position = new PVector(x, y);
@@ -11,15 +12,21 @@ class Ball {
     velocity.mult(3);
     //radius = int(random(5, 25));
     radius = 10;
-    mass = radius * 0.2;
-    color_R = int(random(0, 50));
+    mass = 1;
+    color_R = int(random(10, 50));
     color_G = int(random(50, 255));
-    color_B = int(random(0, 50));
+    color_B = int(random(10, 50));
   }
   
   void drawBall() {
+    // get distance to cursor
+    distance = sqrt(pow((mouseX - position.x), 2) + pow((mouseY - position.y), 2));
+    
+    // normalize distance to multiplication factor
+    distance = (500 - distance) / 200;
+    
     noStroke();
-    fill(color_R, color_G, color_B);
+    fill(color_R * (1 - distance), color_G * distance, color_B * (1 - distance));
     
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
@@ -77,23 +84,23 @@ class Ball {
        just need to worry about bTemp[1] position*/
       PVector[] bTemp = {
         new PVector(), new PVector()
-        };
+      };
 
-        /* this ball's position is relative to the other
-         so you can use the vector between them (bVect) as the 
-         reference point in the rotation expressions.
-         bTemp[0].position.x and bTemp[0].position.y will initialize
-         automatically to 0.0, which is what you want
-         since b[1] will rotate around b[0] */
-        bTemp[1].x  = cosine * bVect.x + sine * bVect.y;
+      /* this ball's position is relative to the other
+       so you can use the vector between them (bVect) as the 
+       reference point in the rotation expressions.
+       bTemp[0].position.x and bTemp[0].position.y will initialize
+       automatically to 0.0, which is what you want
+       since b[1] will rotate around b[0] */
+      bTemp[1].x  = cosine * bVect.x + sine * bVect.y;
       bTemp[1].y  = cosine * bVect.y - sine * bVect.x;
 
       // rotate Temporary velocities
       PVector[] vTemp = {
         new PVector(), new PVector()
-        };
+      };
 
-        vTemp[0].x  = cosine * velocity.x + sine * velocity.y;
+      vTemp[0].x  = cosine * velocity.x + sine * velocity.y;
       vTemp[0].y  = cosine * velocity.y - sine * velocity.x;
       vTemp[1].x  = cosine * other.velocity.x + sine * other.velocity.y;
       vTemp[1].y  = cosine * other.velocity.y - sine * other.velocity.x;
