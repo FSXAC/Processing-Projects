@@ -7,12 +7,14 @@
 
 // constants
 int ENTITY_LIMIT = 500;
-int WIDTH = 1000;
-int HEIGHT = 800;
+
+// global vars
 int count = 0;
 int time = 0;
 int ptime;
 float gravity = 0.5;
+
+boolean collide = false;
 
 Ball[] balls = new Ball[ENTITY_LIMIT];
 
@@ -38,6 +40,11 @@ void draw() {
   for (int i = 0; i < count; i++) {
      balls[i].drawBall();
      balls[i].update(gravity);
+     for (int j = 0; j < count; j++) {
+       if (j != i && collide) {
+         balls[i].checkCollision(balls[j]);
+       }
+     }
   }
   
   // switch gravity
