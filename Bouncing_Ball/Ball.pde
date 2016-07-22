@@ -2,12 +2,15 @@ class Ball {
   PVector position, velocity;
   float radius, mass;
   int color_R, color_G, color_B;
-  float elsticity = random(-0.8, -0.1);
+  float elasticity = random(-0.8, -0.3);
+  float friction = 0.05;
   
   Ball(float x, float y) {
     position = new PVector(x, y);
-    velocity = new PVector(random(-5, 5), random(-5, 5));
-    radius = int(random(2, 20));
+    velocity = PVector.random2D();
+    velocity.mult(3);
+    //radius = int(random(5, 25));
+    radius = 10;
     mass = radius * 0.2;
     color_R = int(random(0, 50));
     color_G = int(random(50, 255));
@@ -16,40 +19,43 @@ class Ball {
   
   void drawBall() {
     noStroke();
-    if (velocity.y > 0) {
-      fill(color_R, color_G, color_B);
-    } else {
-      fill(color_B, color_R, color_G);
-    }
+    fill(color_R, color_G, color_B);
     
-    ellipse(position.x, position.y, radius, radius);
+    ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
   void update(float acceleration) {
+    // update position
+    position.add(velocity);
+    
     // update velocity
     velocity.y += acceleration;
     
-    // update position
-    position.x += velocity.x;
-    position.y += velocity.y;
-    
     // check boundary collision
-    if (position.x >= width) {
+    if (position.x > width - radius) {
       velocity.x *= -1;
       position.x = width - radius;
     }
-    if (position.x <= 0) {
+    else if (position.x < radius) {
       velocity.x *= -1;
       position.x = radius;
     }
-    if (position.y >= height) {
-      velocity.y *= elsticity;
+    else if (position.y > height - radius) {
+      velocity.y *= elasticity;
       position.y = height - radius;
     }
-    if (position.y <= 0) {
-      velocity.y *= elsticity;
-      position.y = 0 + radius;
-    } 
+    else if (position.y < radius) {
+      velocity.y *= elasticity;
+      position.y = radius;
+    }
+    
+    // simplify velocity
+    if (abs(velocity.y) < 0.1 & velocity.y != 0) {
+      velocity.y = 0;
+      if (velocity.x > 0) {
+        velocity.x -= friction;
+      }
+    }
   }
   
   void checkCollision(Ball other) {

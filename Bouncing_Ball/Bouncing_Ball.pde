@@ -14,7 +14,7 @@ int time = 0;
 int ptime;
 float gravity = 0.5;
 
-boolean collide = false;
+boolean collide = true;
 
 Ball[] balls = new Ball[ENTITY_LIMIT];
 
@@ -40,6 +40,10 @@ void draw() {
   for (int i = 0; i < count; i++) {
      balls[i].drawBall();
      balls[i].update(gravity);
+     //print(balls[i].position.y);
+     //print(", ");
+     //println(balls[i].velocity.y);
+     
      for (int j = 0; j < count; j++) {
        if (j != i && collide) {
          balls[i].checkCollision(balls[j]);
@@ -56,3 +60,10 @@ void draw() {
     gravity *= -1;
   }
 }
+
+//void mousePressed() {
+//  if (count < ENTITY_LIMIT) {
+//    balls[count] = new Ball(mouseX, mouseY);
+//    count++;
+//  }
+//}
