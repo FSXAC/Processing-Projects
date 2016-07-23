@@ -12,19 +12,25 @@ int ENTITY_LIMIT = 500;
 int count = 0;
 int time = 0;
 int ptime;
-float gravity = 0.5;
 
+// simulation parameres
+int gravity_interval = 2;
+float gravity = 0;
 boolean collide = true;
-
-Ball[] balls = new Ball[ENTITY_LIMIT];
+boolean warpBoundaries = true;
 
 // object arrays
+Ball[] balls = new Ball[ENTITY_LIMIT];
+
 void setup() {
   // setup window size
-  size(displayWidth, displayHeight);
+  size(1600, 900, P2D);
   
   // setup background;
   background(0);
+  
+  // setup drawing
+  noStroke();
 }
 
 void draw() {
@@ -35,11 +41,12 @@ void draw() {
   
   // clear screen
   background(0);
+  fill(0, 10);
   
   // draw balls
   for (int i = 0; i < count; i++) {
      balls[i].drawBall();
-     balls[i].update(gravity);
+     balls[i].update();
      
      for (int j = 0; j < count; j++) {
        if (j != i && collide) {
@@ -50,7 +57,7 @@ void draw() {
   
   // switch gravity
   ptime = time;
-  time = int(millis() / 1000) % 5;
+  time = int(millis() / 1000) % gravity_interval;
   
   if (ptime != time && time == 0) {
     println("gravity flipped");

@@ -2,7 +2,7 @@ class Ball {
   PVector position, velocity;
   float radius, mass;
   int color_R, color_G, color_B;
-  float elasticity = random(-0.8, -0.3);
+  float elasticity = random(-0.9, -0.2);
   float friction = 0.05;
   float distance;
   
@@ -10,9 +10,8 @@ class Ball {
     position = new PVector(x, y);
     velocity = PVector.random2D();
     velocity.mult(3);
-    //radius = int(random(5, 25));
-    radius = 10;
-    mass = 1;
+    radius = int(random(5, 25));
+    mass = radius;
     color_R = int(random(10, 50));
     color_G = int(random(50, 255));
     color_B = int(random(10, 50));
@@ -25,29 +24,37 @@ class Ball {
     // normalize distance to multiplication factor
     distance = (500 - distance) / 200;
     
-    noStroke();
     fill(color_R * (1 - distance), color_G * distance, color_B * (1 - distance));
     
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
-  void update(float acceleration) {
+  void update() {
     // update position
     position.add(velocity);
     
     // update velocity
-    velocity.y += acceleration;
+    velocity.y += gravity;
     
-    // check boundary collision
-    if (position.x > width - radius) {
-      velocity.x *= -1;
-      position.x = width - radius;
+    if (!warpBoundaries) {
+      // check boundary collision
+      if (position.x > width - radius) {
+        velocity.x *= -1;
+        position.x = width - radius;
+      }
+      else if (position.x < radius) {
+        velocity.x *= -1;
+        position.x = radius;
+      }
+    } else {
+      // warp to the other side
+      if (position.x > width + radius) {
+        position.x = 0 - radius;
+      } else if (position.x < -radius) {
+        position.x = width + radius;
+      }
     }
-    else if (position.x < radius) {
-      velocity.x *= -1;
-      position.x = radius;
-    }
-    else if (position.y > height - radius) {
+    if (position.y > height - radius) {
       velocity.y *= elasticity;
       position.y = height - radius;
     }
