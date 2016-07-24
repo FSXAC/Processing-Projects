@@ -6,7 +6,7 @@ Ball[] balls = new Ball[MAX_ENTITY];
 
 // physics constants
 float SPEED_FACTOR = 0.1;
-float FRICTION = 0.0005;
+float FRICTION = 0.00001;
 
 // vector calculation
 PVector start, current, projection, end;
@@ -14,7 +14,7 @@ int count = 0;
 
 void setup() {
   stroke(150);
-  strokeWeight(4);
+  strokeWeight(1);
   size(800, 800);
 
   projection = new PVector(0, 0);
@@ -51,4 +51,16 @@ void mouseReleased() {
   balls[count] = new Ball();
   balls[count].shoot(start, new PVector(start.x - end.x, start.y - end.y));
   count++;
+}
+
+void keyPressed() {
+  // setup triangle form
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j <= i; j++) {
+      balls[count] = new Ball();
+      balls[count].position.x = 100 + 24 * i - 12*j;
+      balls[count].position.y = 200 + 24 * j;
+      count++;
+    }
+  }
 }

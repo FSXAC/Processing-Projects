@@ -2,8 +2,9 @@ class Ball {
   // properties
   PVector position, velocity;
   int radius = 10;
-  int mass = 1;
+  int mass = radius;
   float speedMulti = 1;
+  color fillColor = color(int(random(0, 255)), int(random(0, 255)), int(random(0, 255)));
   
   // constructor
   Ball() {
@@ -12,7 +13,7 @@ class Ball {
   }
   
   void display() {
-    fill(255);
+    fill(fillColor);
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
