@@ -43,7 +43,8 @@ void mousePressed() {
     balls[count] = new Ball(mouseX, mouseY);
     
     if (count == 0) {
-      //balls[count].setFixed();
+      balls[count].setFixed();
+      balls[count].mass = 50;
     }
     count++;
   }

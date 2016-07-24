@@ -8,13 +8,13 @@ class Ball {
     // physics
     position = new PVector(x, y);
     //velocity = PVector.random2D();
-    velocity = new PVector(0, 0);
+    velocity = new PVector(1, 0);
     acceleration = new PVector(0, 0);
     
     // body
     //radius = int(random(2, 10));
-    radius = 10;
-    mass = radius;
+    mass = 10;
+    radius = mass;
     
     // color
     color_R = int(random(50, 255));
@@ -27,8 +27,7 @@ class Ball {
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
-  void update() {
-    
+  void update() { 
     if (!fixed) {
       // update position
       position.add(velocity);
