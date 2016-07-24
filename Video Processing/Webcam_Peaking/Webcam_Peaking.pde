@@ -2,6 +2,9 @@ import processing.video.*;
 
 Capture video;
 
+int index;
+int peakingThreshold;
+
 void setup() {
   size(640, 480);
  
@@ -20,12 +23,23 @@ void draw() {
     for (int y = 0; y < video.height; y++) {
       
       // get index
-      int index = y * video.width + x;
+      index = y * video.width + x;
       
-      // new pixel
-      pixels[index] = video.pixels[index];
+      // get peaking threshold
+      peakingThreshold = int(map(mouseX, 0, width, 0, 255));
+      if (brightness(video.pixels[index]) > peakingThreshold) {
+        if (y % 2 == 0) {
+          pixels[index] = color(255, 0, 0);
+        }
+        
+      } else {
+        pixels[index] = video.pixels[index];
+      }
     }
   }
   
   updatePixels();
+  
+  // text
+  text(peakingThreshold, 10, 10);
 }
