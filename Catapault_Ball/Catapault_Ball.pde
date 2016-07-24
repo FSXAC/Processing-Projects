@@ -3,6 +3,10 @@
 int MAX_ENTITY = 500;
 Ball ball;
 
+// physics constants
+float SPEED_FACTOR = 0.1;
+float FRICTION = 0.0005;
+
 // vector calculation
 PVector start, current, projection, end;
 
@@ -11,13 +15,14 @@ void setup() {
   strokeWeight(4);
   size(800, 800);
   
-  ball = new Ball(new PVector(width / 2, height / 2), new PVector(0, 0));
+  ball = new Ball(new PVector(width / 2, height / 2));
   projection = new PVector(0, 0);
 }
 
 void draw() {
   background(0);
   ball.display();
+  ball.update();
   
   if (mousePressed) {
     current = new PVector(mouseX, mouseY);
@@ -33,22 +38,5 @@ void mousePressed() {
 
 void mouseReleased() {
   end = new PVector(mouseX, mouseY);
-  ball.position = start;
-  ball.velocity.x = start.x - end.x;
-  ball.velocity.y = start.y - end.y;
-  ball.velocity.mult(0.05);
-}
-
-class Ball {
-  PVector position, velocity;
-  Ball(PVector pos, PVector vel) {
-    position = pos;
-    velocity = vel;
-  }
-  
-  void display() {
-    fill(255);
-    ellipse(position.x, position.y, 20, 20);
-    position.add(velocity);
-  }
+  ball.shoot(start, new PVector(start.x - end.x, start.y - end.y));
 }
