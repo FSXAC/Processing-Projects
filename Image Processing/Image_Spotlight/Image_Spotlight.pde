@@ -24,8 +24,15 @@ void draw() {
       float g = green(img.pixels[index]);
       float b = blue(img.pixels[index]);
       
+      // get distance to cursor
+      float distance = sqrt(pow((mouseX - x), 2) + pow((mouseY - y), 2));
+      
+      // normalize distance to multiplication factor
+      distance = (300 - distance) / 300;
+      
       // load pixels
-      pixels[index] = color(r, g, b);
+      //pixels[index] = color(r * (1 - distance), g * distance, b * (1 - distance));
+      pixels[index] = color(r * distance, g * distance, b * distance);
     }
   }
   
