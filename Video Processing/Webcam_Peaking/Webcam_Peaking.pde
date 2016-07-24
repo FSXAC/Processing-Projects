@@ -28,8 +28,10 @@ void draw() {
       // get peaking threshold
       peakingThreshold = int(map(mouseX, 0, width, 0, 255));
       if (brightness(video.pixels[index]) > peakingThreshold) {
-        if (y % 2 == 0) {
-          pixels[index] = color(255, 0, 0);
+        if (y % 6 == 0 || y % 6 == 1 || y % 6 == 2) {
+          pixels[index] = color(0, 0, 0);
+        } else {
+          pixels[index] = color(255, 255, 255);
         }
         
       } else {
