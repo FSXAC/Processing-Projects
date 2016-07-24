@@ -13,11 +13,11 @@ class Rect {
     velocity.mult(30);
     
     // radius of rectangle
-    radius = int(map(max(rectWidth, rectHeight), 5, 50, 5, 12));
+    radius = int(map(max(rectWidth, rectHeight), 5, 35, 7, 12));
 
     // set size to random
-    rectWidth = int(random(5, 50));
-    rectHeight = int(random(5, 50));
+    rectWidth = int(random(5, 35));
+    rectHeight = int(random(5, 35));
   }
   
   void drawRect() {
@@ -38,21 +38,21 @@ class Rect {
       if (position.x <= 0) {
         position.x = 0;
         velocity.x *= -1;
-        velocity.y += random(-1, 1);
+        velocity.y += random(-3, 3);
       } else if (position.x + rectWidth >= width) {
         position.x = width - rectWidth;
         velocity.x *= -1;
-        velocity.y += random(-1, 1);
+        velocity.y += random(-3, 3);
       }
       
       if (position.y <= 0) {
         position.y = 0;
         velocity.y *= -1;
-        velocity.x += random(-1, 1);
+        velocity.x += random(-3, 3);
       } else if (position.y + rectHeight >= height) {
         position.y = height - rectHeight;
         velocity.y *= -1;
-        velocity.x += random(-1, 1);
+        velocity.x += random(-3, 3);
       }
     } else {
       // translate to the other side of screen

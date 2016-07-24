@@ -7,7 +7,7 @@ PImage img;
 // rectangle list
 int MAX_ENTITY = 500;
 int count = 0;
-int group = 10;
+int group = 100;
 Rect[] rectangles = new Rect[MAX_ENTITY];
 
 // warp screen
