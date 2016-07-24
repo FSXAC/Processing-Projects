@@ -1,7 +1,8 @@
 // Catepault mouse guesture test
 
 int MAX_ENTITY = 500;
-Ball ball;
+
+Ball[] balls = new Ball[MAX_ENTITY];
 
 // physics constants
 float SPEED_FACTOR = 0.1;
@@ -9,20 +10,29 @@ float FRICTION = 0.0005;
 
 // vector calculation
 PVector start, current, projection, end;
+int count = 0;
 
 void setup() {
   stroke(150);
   strokeWeight(4);
   size(800, 800);
-  
-  ball = new Ball(new PVector(width / 2, height / 2));
+
   projection = new PVector(0, 0);
 }
 
 void draw() {
   background(0);
-  ball.display();
-  ball.update();
+  
+  for (int i = 0; i < count; i++) {
+    balls[i].display();
+    balls[i].update();
+    
+    for (int j = 0; j < count; j++) {
+      if (i != j) {
+        balls[i].checkCollision(balls[j]);
+      }
+    }
+  }
   
   if (mousePressed) {
     current = new PVector(mouseX, mouseY);
@@ -38,5 +48,7 @@ void mousePressed() {
 
 void mouseReleased() {
   end = new PVector(mouseX, mouseY);
-  ball.shoot(start, new PVector(start.x - end.x, start.y - end.y));
+  balls[count] = new Ball();
+  balls[count].shoot(start, new PVector(start.x - end.x, start.y - end.y));
+  count++;
 }
