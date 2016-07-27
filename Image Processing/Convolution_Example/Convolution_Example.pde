@@ -1,15 +1,11 @@
-// Learning Processing
-// Daniel Shiffman
-// http://www.learningprocessing.com
-
-// Example 15-13: Sharpen with convolution
-
 PImage img;
-int w = 100;
 // The convolution matrix for a "sharpen" effect stored as a 3 x 3 two-dimensional array.
-float[][] matrix = { { 1, 1, 1 } , 
-                     { 1, -9, 1 } ,
-                     { 1, 1, 1 } } ;
+float[][] matrix1 = {{1, 1, 1}, {1, -9, 1}, {1, 1, 1}};
+float[][] matrix2 = {{-1, -1, -1}, {-1, 9, -1}, {-1, -1, -1}};
+float[][] matrix3 = {{0.1, 0.1, 0.1}, {0.1, 0.1, 0.1}, {0.1, 0.1, 0.1}};
+float[][] matrix4 = {{1, -1, 1}, {-1, 1, -1}, {1, -1, 1}};
+
+int mode = 0;
 
 void setup() {
   size(1000,750);
@@ -22,28 +18,41 @@ void draw() {
   // so let's set the whole image as the background first
   image(img,0,0);
   
-  // In this example we are only processing a section of the image-an 80 x 80 rectangle around the mouse location.  
-  int xstart = constrain(mouseX-w/2,0,img.width); 
-  int ystart = constrain(mouseY-w/2,0,img.height);
-  int xend = constrain(mouseX + w/2,0,img.width);
-  int yend = constrain(mouseY + w/2,0,img.height);
   int matrixsize = 3;
   
   loadPixels();
   // Begin our loop for every pixel
-  for (int x = xstart; x < xend; x++ ) {
-    for (int y = ystart; y < yend; y++ ) {
+  for (int x = 0; x < width; x++ ) {
+    for (int y = 0; y < height; y++ ) {
       // Each pixel location (x,y) gets passed into a function called convolution()
       // The convolution() function returns a new color to be displayed.
-      color c = convolution(x,y,matrix,matrixsize,img); 
-      int loc = x + y*img.width;
-      pixels[loc] = c;
+      int index = x + y*img.width;
+      color c;
+      
+      if (mode == 1) {
+        c = convolution(x,y,matrix1,matrixsize,img); 
+      } else if (mode == 2) {
+        c = convolution(x,y,matrix2,matrixsize,img); 
+      } else if (mode == 3) {
+        c = convolution(x,y,matrix3,matrixsize,img);         
+      } else if (mode == 4) {
+        c = convolution(x,y,matrix4,matrixsize,img);         
+      } else {
+        c = img.pixels[index];
+      }
+      
+      pixels[index] = c;
     }
   }
   updatePixels();
-  stroke(0);
-  noFill();
-  rect(xstart,ystart,w,w);
+}
+
+void keyPressed() {
+  if (mode != 4) {
+    mode++;
+  } else {
+    mode = 0;
+  }
 }
 
 color convolution(int x, int y, float[][] matrix, int matrixsize, PImage img) {
