@@ -17,6 +17,7 @@ void setup() {
   
   video = new Capture(this, 640, 480, 30);
   video.start();
+  delay(5000);
 }
 
 void captureEvent(Capture video) {

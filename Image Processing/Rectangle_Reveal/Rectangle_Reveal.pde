@@ -17,7 +17,7 @@ void setup() {
   
   if (runOnce) {
     noLoop();
-    group *= 100;
+    group = 10000;
   }
 }
 
@@ -29,6 +29,6 @@ void draw() {
     alpha = int(random(25, 70));
     rectMode(CENTER);
     fill(img.pixels[int(y) * width + int(x)], alpha);
-    rect(x, y, int(random(5, 80)), int(random(5, 40)), int(random(7, 20)));
+    rect(x, y, int(random(5, 80)), int(random(5, 30)), int(random(7, 20)));
   }
 }

@@ -47,7 +47,7 @@ void draw() {
   updatePixels();
 }
 
-void keyPressed() {
+void mousePressed() {
   if (mode != 4) {
     mode++;
   } else {
