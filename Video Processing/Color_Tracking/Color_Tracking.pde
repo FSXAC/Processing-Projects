@@ -46,7 +46,7 @@ void draw() {
       
       // CLOSEST MODE
       if (diff < valueMin) {
-        xMin = x;
+        xMin = width - 1 -x;
         yMin = y;
         valueMin = diff;
       }
@@ -58,7 +58,7 @@ void draw() {
       //  count++;
       //}
       
-      pixels[index] = a;
+      pixels[indexM] = a;
     }
   }
   updatePixels();
@@ -87,5 +87,5 @@ void draw() {
 }
 
 void mousePressed() {
-  referencePixel = video.pixels[mouseX + mouseY * width];
+  referencePixel = video.pixels[width - 1 - mouseX + mouseY * width];
 }
