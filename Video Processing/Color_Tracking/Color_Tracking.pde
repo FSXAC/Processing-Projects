@@ -33,9 +33,10 @@ void draw() {
   loadPixels();
   
   // Begin loop to walk through every pixel
-  for (int x = 0; x < video.width; x ++ ) {
-    for (int y = 0; y < video.height; y ++ ) {
-      int index = x + y*video.width;
+  for (int x = 0; x < width; x ++ ) {
+    for (int y = 0; y < height; y ++ ) {
+      int index = x + y * width;
+      int indexM = (width - 1 - x) + y * width;
 
       color a = video.pixels[index];
       
@@ -73,12 +74,16 @@ void draw() {
   
   // CLOSEST MODE
   fill(referencePixel, 150);
-  stroke(referencePixel);
-  strokeWeight(3);
-  ellipse(xMin, yMin, sqrt(diff), sqrt(diff));
+  stroke(255 - red(referencePixel), 255 - green(referencePixel), 255 - blue(referencePixel));
+  strokeWeight(2);
+  ellipse(xMin, yMin, sqrt(diff) + 5, sqrt(diff) + 5);
+  strokeWeight(1);
+  line(xMin - 10, yMin, xMin + 10, yMin);
+  line(xMin, yMin - 10, xMin, yMin + 10);
   
   fill(0);
-  text(threshold, 10, 10);
+  //text(threshold, 10, 10);
+  text(diff, 10, 10);
 }
 
 void mousePressed() {
