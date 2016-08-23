@@ -7,27 +7,12 @@ class Body {
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
   
-  Body(float m) {
+  Body(float m, float x, float y) {
     mass = m;
     radius = m * 10;
-    this.position = new PVector(random(radius, width - radius),
-    random(this.radius, height - radius));
-    velocity = new PVector(random(-1, 1), random(-1, 1));
-  }
-  
-  Body(float m, PVector v) {
-    mass = m;
-    radius = m * 10;
-    position = new PVector(random(radius, width - radius),
-    random(radius, height - radius));
-    velocity = v;
-  }
-  
-  Body(float m, PVector p, PVector v) {
-    mass = m;
-    radius = m * 10;
-    position = p;
-    velocity = v;
+    position = new PVector(x, y);
+    //velocity = new PVector(random(-1, 1), random(-1, 1));
+    velocity = new PVector(0, 0);
   }
   
   void applyForce(PVector force) {
@@ -38,10 +23,24 @@ class Body {
   void applyUForce(PVector force) {
     acceleration.add(force);
   }
+  
+  // applies drag force
+  void drag(Medium m) {
+    PVector drag = velocity.copy();
+    
+    // reverse direction and get unit vector
+    drag.mult(-1).normalize();
+    
+    // complete the equation F_d = -\rho*v^2*A*C_d*v_hat
+    drag.mult(m.drag_coefficient * m.density * velocity.magSq());
+    
+    // accumulate force
+    applyForce(drag);
+  }
 
   void display() {
     noStroke();
-    fill(255, 150);
+    fill(255, 200);
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
@@ -75,6 +74,18 @@ class Body {
       // bottom
       position.y = height - radius;
       velocity.y *= -elasticity;
+    }
+  }
+  
+  float getArea() {
+    return PI * radius * radius;
+  }
+  
+  boolean isInside(Medium m) {
+    if ((position.x > m.x1 && position.x < m.x2) && (position.y > m.y1 && position.y < m.y2)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
