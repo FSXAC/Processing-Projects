@@ -1,4 +1,4 @@
-Body[] bodies;
+Body[] bodies = new Body[10];;
 PVector gravity = new PVector(0, 0.2);
 
 void setup() {
@@ -6,7 +6,6 @@ void setup() {
   size(1280, 720);
   
   // initialize an array of bodies
-  bodies = new Body[10];
   for (int i = 0; i < bodies.length; i++) {
     bodies[i] = new Body(i+1);
   }
@@ -16,10 +15,23 @@ void draw() {
   background(0, 0, 50);
   
   for (Body b:bodies) {
-    b.applyForce(PVector.mult(gravity, b.mass));
+    // friction calculation
+    PVector friction = b.velocity.copy();
+    friction.normalize();
+    friction.mult(-b.mu);
+    
+    b.applyUForce(gravity);
+    b.applyForce(friction);
     
     // update
     b.update();;
     b.display();
   }   
+}
+
+void mousePressed() {
+  // reset balls
+  for (int i = 0; i < bodies.length; i++) {
+    bodies[i] = new Body(i+1);
+  }
 }

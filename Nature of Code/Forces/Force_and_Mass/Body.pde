@@ -1,8 +1,10 @@
 class Body {
   float mass;
   float radius;
-  float elasticity = 0.5;
-  PVector position, velocity;
+  float elasticity = 1;
+  float mu = 1;
+  PVector position;
+  PVector velocity;
   PVector acceleration = new PVector(0, 0);
   
   Body(float m) {
@@ -10,8 +12,6 @@ class Body {
     radius = m * 10;
     this.position = new PVector(random(radius, width - radius),
     random(this.radius, height - radius));
-    //position = new PVector(width/2, height/2);
-    //velocity = new PVector(0, 0);
     velocity = new PVector(random(-1, 1), random(-1, 1));
   }
   
@@ -32,7 +32,11 @@ class Body {
   
   void applyForce(PVector force) {
     PVector applied = PVector.div(force, mass);
-    this.acceleration.add(applied);
+    acceleration.add(applied);
+  }
+  
+  void applyUForce(PVector force) {
+    acceleration.add(force);
   }
 
   void display() {
@@ -44,15 +48,19 @@ class Body {
   void update() {
     // updates the current state of the body
     // physics
-    position.add(velocity);
     velocity.add(acceleration);
-    acceleration.mult(0);
-    //this.velocity.limit(10);
+    position.add(velocity);
     
-    // boundary detection
+    // reset acceleration
+    acceleration.mult(0);
+    
+    checkBoundary();
+  }
+  
+  void checkBoundary() {
     if (position.x < radius) {
       // left
-      position.x = this.radius;
+      position.x = radius;
       velocity.x *= -elasticity;
     } else if (position.x > width - radius) {
       // right
