@@ -2,7 +2,9 @@ class Body {
   float mass;
   float radius;
   float elasticity = 1;
-  float mu = 0.05;
+  float default_mu = 0.01;
+  float mu = default_mu;
+  boolean inPocket = false;
   PVector position;
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
@@ -36,12 +38,16 @@ class Body {
   }
   
   void applyUForce(PVector force) {
-    acceleration.add(force);
+      acceleration.add(force);
   }
 
   void display() {
     noStroke();
-    fill(255, 150);
+    if (inPocket) {
+      fill(150, 0, 0, 150);
+    } else {
+      fill(255, 150);
+    }
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
@@ -75,6 +81,18 @@ class Body {
       // bottom
       position.y = height - radius;
       velocity.y *= -elasticity;
+    }
+  }
+  
+  void checkFriction(frictionPocket pocket) {
+    // check if it's inside the pocket
+    if ((position.x > pocket.p1.x && position.x < pocket.p2.x) &&
+    (position.y > pocket.p1.y && position.y < pocket.p2.y)) {
+      mu = pocket.mu;
+      inPocket = true;
+    } else {
+      mu = default_mu;
+      inPocket = false;
     }
   }
 }
