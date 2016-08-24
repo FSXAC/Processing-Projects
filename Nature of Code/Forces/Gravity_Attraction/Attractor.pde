@@ -14,6 +14,15 @@ class Attractor {
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
+  // [2]
+  void attract(Body m) {
+    // get unit vector of direction first
+    PVector force = PVector.sub(position, m.position).normalize();
+    force.mult(mass * m.mass);
+    force.div(PVector.sub(position, m.position).magSq());  
+    m.applyForce(force);
+  }
+  
   void setRadius(float r) {
     radius = r;
   }

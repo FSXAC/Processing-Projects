@@ -15,7 +15,7 @@ void setup() {
   }
   
   // initialize attractor
-  blackhole = new Attractor(200, width / 2, height / 2);
+  blackhole = new Attractor(100, width / 2, height / 2);
 }
 
 void draw() {
@@ -26,10 +26,13 @@ void draw() {
   
   for (Body b:bodies) {
     // assume no friction in space
-    // four ways of implementing attraction
+    // three ways of implementing attraction
     // [1]: function that receives both body and attractor
-    
-    attract(blackhole, b);
+    //attract(blackhole, b);
+    // [2]: attractor attraction function
+    //blackhole.attract(b);
+    // [3]: body attraction function
+    b.attractTo(blackhole);
     
     // update
     b.update();;

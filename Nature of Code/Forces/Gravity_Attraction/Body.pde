@@ -13,7 +13,7 @@ class Body {
     radius = m * 10;
     this.position = new PVector(random(radius, width - radius),
     random(this.radius, height - radius));
-    velocity = new PVector(random(-5, 5), random(-5, 5));
+    velocity = new PVector(random(-1, 1), random(-1, 1));
   }
   
   Body(float m, PVector v) {
@@ -26,7 +26,7 @@ class Body {
   
   Body(float m, PVector p, PVector v) {
     mass = m;
-    radius = m * 10;
+    radius = m * 3;
     position = p;
     velocity = v;
   }
@@ -79,5 +79,13 @@ class Body {
       position.y = height - radius;
       velocity.y *= -elasticity;
     }
+  }
+  
+  void attractTo(Attractor a) {
+    // get unit vector of direction first
+    PVector force = PVector.sub(a.position, position).normalize();
+    force.mult(a.mass * mass);
+    force.div(PVector.sub(a.position, position).magSq());  
+    applyForce(force); 
   }
 }
