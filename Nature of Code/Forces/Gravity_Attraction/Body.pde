@@ -42,7 +42,7 @@ class Body {
 
   void display() {
     noStroke();
-    fill(255, 150);
+    fill(255, 5);
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   

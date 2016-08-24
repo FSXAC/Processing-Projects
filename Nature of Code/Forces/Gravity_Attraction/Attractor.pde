@@ -26,4 +26,8 @@ class Attractor {
   void setRadius(float r) {
     radius = r;
   }
+  
+  void setMass(float m) {
+    mass = m;
+  }
 }
