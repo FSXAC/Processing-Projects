@@ -1,4 +1,4 @@
-Body[] bodies = new Body[10];;
+Body[] bodies = new Body[10];
 PVector gravity = new PVector(0, 0.2);
 
 void setup() {
