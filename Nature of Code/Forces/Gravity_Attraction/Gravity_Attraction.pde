@@ -1,6 +1,6 @@
 // gravity based on a single fixed point
 
-Body[] bodies = new Body[20];
+Body[] bodies = new Body[5];
 
 // new attractor object
 Attractor blackhole;
