@@ -15,7 +15,7 @@ void setup() {
   }
   
   // initialize attractor
-  blackhole = new Attractor(20, width / 2, height / 2);
+  blackhole = new Attractor(200, width / 2, height / 2);
 }
 
 void draw() {
@@ -29,6 +29,8 @@ void draw() {
     // four ways of implementing attraction
     // [1]: function that receives both body and attractor
     
+    attract(blackhole, b);
+    
     // update
     b.update();;
     b.display();
@@ -37,7 +39,11 @@ void draw() {
 
 // [1]
 void attract(Attractor a, Body mass) {
-  
+  // get unit vector of direction first
+  PVector force = PVector.sub(a.position, mass.position).normalize();
+  force.mult(a.mass * mass.mass);
+  force.div(PVector.sub(a.position, mass.position).magSq());  
+  mass.applyForce(force);
 }
 
 void mousePressed() {

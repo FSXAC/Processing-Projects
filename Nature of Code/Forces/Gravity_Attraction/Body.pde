@@ -3,7 +3,7 @@ class Body {
   float radius;
   float elasticity = 1;
   float mu = 0.00;
-  boolean collideBoundary = true;
+  boolean collideBoundary = false;
   PVector position;
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
@@ -13,7 +13,7 @@ class Body {
     radius = m * 10;
     this.position = new PVector(random(radius, width - radius),
     random(this.radius, height - radius));
-    velocity = new PVector(random(-1, 1), random(-1, 1));
+    velocity = new PVector(random(-5, 5), random(-5, 5));
   }
   
   Body(float m, PVector v) {
