@@ -1,6 +1,6 @@
 // gravity based on a single fixed point
 
-Body[] bodies = new Body[5];
+Body[] bodies = new Body[50];
 
 // new attractor object
 Attractor blackhole;
@@ -20,7 +20,7 @@ void setup() {
 }
 
 void draw() {
-  //background(0, 0, 50);
+  background(0, 0, 50);
   
   // draw attractor
   blackhole.display();
@@ -40,7 +40,7 @@ void draw() {
     b.display();
   }
 
-  println("attractor mass: " + str(blackhole.mass));
+  text("attractor mass: " + str(blackhole.mass), 10, 10);
 }
 
 // [1]

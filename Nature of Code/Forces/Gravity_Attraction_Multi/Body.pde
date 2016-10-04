@@ -10,7 +10,7 @@ class Body {
   
   Body(float m) {
     mass = m;
-    radius = m * 10;
+    radius = m;
     this.position = new PVector(random(radius, width - radius),
     random(this.radius, height - radius));
     velocity = new PVector(random(-1, 1), random(-1, 1));
@@ -18,7 +18,7 @@ class Body {
   
   Body(float m, PVector v) {
     mass = m;
-    radius = m * 10;
+    radius = m;
     position = new PVector(random(radius, width - radius),
     random(radius, height - radius));
     velocity = v;
@@ -26,7 +26,7 @@ class Body {
   
   Body(float m, PVector p, PVector v) {
     mass = m;
-    radius = m * 3;
+    radius = m;
     position = p;
     velocity = v;
   }
@@ -42,7 +42,7 @@ class Body {
 
   void display() {
     noStroke();
-    fill(255);
+    fill(255, 100);
     ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   

@@ -10,10 +10,10 @@ class Attractor {
   }
   
   void display() {
-    fill(255, 0, 0, 150);
-    ellipse(position.x, position.y, radius * 2, radius * 2);
-    position.x = mouseX;
-    position.y = mouseY;
+    //stroke(255);
+    //strokeWeight(1);
+    //fill(map(mass, 100, 500, 0, 255), 0, 0);
+    //ellipse(position.x, position.y, radius * 2, radius * 2);
   }
   
   // [2]
