@@ -14,8 +14,9 @@ Camera worldCamera = new Camera();
 void setup() {
   // screen
   size(1280, 720);
-  background(0, 0, 0);
-  
+  background(255);
+  smooth();
+    
   // initialize an array of bodies with a single pixel
   for (int i = 0; i < bodies.length; i++) {
     //bodies[i] = new Body(1, new PVector(width / 2, map(i, 0, bodies.length, 50, height / 2 - 20)), new PVector(1, 0));
@@ -30,10 +31,6 @@ void setup() {
   for (int i = 0; i < attractors.length; i++) {
     attractors[i] = new Attractor(random(500, 1000), random(0, width), random(0, height));
   }
-  
-  // initialize drawing tools
-  stroke(255, 150, 0, 35);
-  strokeWeight(5);
 }
 
 void draw() {
@@ -42,6 +39,12 @@ void draw() {
   worldCamera.draw();
   
   //background(0, 0, 0);
+  // fading background;
+  fill(255, 15);
+  noStroke();  
+  rect(0, 0, width, height);
+  
+  
   for (int i=0; i < 2; i++) {
   for (Body b:bodies) {
     // assume no friction in space

@@ -1,6 +1,6 @@
 class Body {
   float size;
-  PVector position, prev_position;
+  PVector position;
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
   
@@ -8,7 +8,6 @@ class Body {
     size = m;
     position = new PVector(random(size, width - size),
     random(this.size, height - size));
-    prev_position = position;
     velocity = new PVector(random(-1, 1), random(-1, 1));
   }
   
@@ -16,14 +15,12 @@ class Body {
     size = m;
     position = new PVector(random(size, width - size),
     random(size, height - size));
-    prev_position = position;
     velocity = v;
   }
   
   Body(float m, PVector p, PVector v) {
     size = m;
     position = p;
-    prev_position = position;
     velocity = v;
   }
   
@@ -37,14 +34,14 @@ class Body {
   }
 
   void display() {
-    line(position.x, position.y, prev_position.x, prev_position.y);
+    stroke(0);
+    point(position.x, position.y);
     update();
   }
   
   void update() {
     // updates the current state of the body
     // physics
-    prev_position = position;
     velocity.add(acceleration);
     position.add(velocity); 
     
