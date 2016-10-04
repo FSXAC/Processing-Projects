@@ -1,9 +1,12 @@
 // gravity based on multiple points
 
-Body[] bodies = new Body[200];
+Body[] bodies = new Body[1000];
 
 // new attractor arrays
-Attractor[] attractors = new Attractor[2];
+Attractor[] attractors = new Attractor[10];
+
+// wrap screen config
+boolean WRAP_SCREEN = true;
 
 void setup() {
   // screen
@@ -43,8 +46,7 @@ void draw() {
       b.attractTo(a);
     }
 
-    // update
-    b.update();;
+    // draw
     b.display();
   }
 }

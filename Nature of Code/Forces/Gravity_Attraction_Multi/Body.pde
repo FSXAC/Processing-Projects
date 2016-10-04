@@ -1,38 +1,34 @@
 class Body {
-  float mass;
-  float radius;
-  float elasticity = 1;
-  float mu = 0.00;
-  boolean collideBoundary = false;
-  PVector position;
+  float size;
+  PVector position, prev_position;
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
   
   Body(float m) {
-    mass = m;
-    radius = m;
-    this.position = new PVector(random(radius, width - radius),
-    random(this.radius, height - radius));
+    size = m;
+    position = new PVector(random(size, width - size),
+    random(this.size, height - size));
+    prev_position = position;
     velocity = new PVector(random(-1, 1), random(-1, 1));
   }
   
   Body(float m, PVector v) {
-    mass = m;
-    radius = m;
-    position = new PVector(random(radius, width - radius),
-    random(radius, height - radius));
+    size = m;
+    position = new PVector(random(size, width - size),
+    random(size, height - size));
+    prev_position = position;
     velocity = v;
   }
   
   Body(float m, PVector p, PVector v) {
-    mass = m;
-    radius = m;
+    size = m;
     position = p;
+    prev_position = position;
     velocity = v;
   }
   
   void applyForce(PVector force) {
-    PVector applied = PVector.div(force, mass);
+    PVector applied = PVector.div(force, size);
     acceleration.add(applied);
   }
   
@@ -41,50 +37,51 @@ class Body {
   }
 
   void display() {
-    noStroke();
-    fill(255, 100);
-    ellipse(position.x, position.y, radius * 2, radius * 2);
+    //noStroke();
+    //fill(255, 100);
+    //ellipse(position.x, position.y, radius * 2, radius * 2);
+    stroke(255, 100);
+    strokeWeight(0.5);
+    line(position.x, position.y, prev_position.x, prev_position.y);
+    update();
   }
   
   void update() {
     // updates the current state of the body
     // physics
+    prev_position = position;
     velocity.add(acceleration);
-    position.add(velocity);
+    position.add(velocity); 
     
     // reset acceleration
     acceleration.mult(0);
     
-    if (collideBoundary) {
+    if (WRAP_SCREEN) {
       checkBoundary();
     }
   }
   
   void checkBoundary() {
-    if (position.x < radius) {
+    if (position.x < 0) {
       // left
-      position.x = radius;
-      velocity.x *= -elasticity;
-    } else if (position.x > width - radius) {
+      position.x = width;
+    } else if (position.x > width) {
       // right
-      position.x = width - radius;
-      velocity.x *= -elasticity;
+      position.x = 0;
     }
-    if (position.y < radius) {
+    if (position.y < 0) {
       // top
-      position.y = radius;
-      velocity.y *= -elasticity;
-    } else if (position.y > height - radius) {
+      position.y = height;
+    } else if (position.y > height) {
       // bottom
-      position.y = height - radius;
-      velocity.y *= -elasticity;
+      position.y = 0;
     }
   }
   
   void attractTo(Attractor a) {
     // get unit vector of direction first
     PVector force = PVector.sub(a.position, position).normalize();
-    force.mult(a.mass * mass);
+    force.mult(a.mass * size);
     force.div(PVector.sub(a.position, position).magSq());  
     applyForce(force); 
   }
