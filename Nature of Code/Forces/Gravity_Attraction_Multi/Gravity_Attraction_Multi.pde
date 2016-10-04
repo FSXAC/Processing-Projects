@@ -1,12 +1,15 @@
 // gravity based on multiple points
 
-Body[] bodies = new Body[1000];
+Body[] bodies = new Body[200];
 
 // new attractor arrays
-Attractor[] attractors = new Attractor[2];
+Attractor[] attractors = new Attractor[1];
 
 // wrap screen config
 boolean WRAP_SCREEN = false;
+
+// camera
+Camera worldCamera = new Camera();
 
 void setup() {
   // screen
@@ -19,8 +22,8 @@ void setup() {
     //bodies[i] = new Body(0.5, new PVector(random(0, width), random(0, height)), new PVector(random(-1, 1), random(-1, 1)));
     //bodies[i] = new Body(0.5, new PVector(random(0, width), random(0, height)), new PVector(1, 0));
     //bodies[i] = new Body(0.5, new PVector(width / 2 + random(-5, 5), height / 2 + random(-5, 5)), new PVector(1, 0));
-    //bodies[i] = new Body(1, new PVector(width / 2 + random(-5, 5), height / 2 + random(-5, 5)), new PVector(random(-1, 1), random(-1, 1)));
-    bodies[i] = new Body(1, new PVector(map(i, 0, bodies.length, 0, width), 0), new PVector(1, 0));
+    bodies[i] = new Body(1, new PVector(width / 2 + random(-5, 5), height / 2 + random(-5, 5)), new PVector(random(-1, 1), random(-1, 1)));
+    //bodies[i] = new Body(1, new PVector(map(i, 0, bodies.length, 0, width), 0), new PVector(1, 0));
   }
   
   // initialize attractors
@@ -29,13 +32,17 @@ void setup() {
   }
   
   // initialize drawing tools
-  stroke(255, 35);
-  strokeWeight(1);
+  stroke(255, 150, 0, 35);
+  strokeWeight(5);
 }
 
 void draw() {
-  //background(0, 0, 50);
-  for (int i=0; i < 30; i++) {
+  // camera
+  translate(-worldCamera.pos.x, -worldCamera.pos.y);
+  worldCamera.draw();
+  
+  //background(0, 0, 0);
+  for (int i=0; i < 2; i++) {
   for (Body b:bodies) {
     // assume no friction in space
     // three ways of implementing attraction
@@ -64,4 +71,31 @@ void attract(Attractor a, Body mass) {
   force.mult(a.mass * mass.size);
   force.div(PVector.sub(a.position, mass.position).magSq());  
   mass.applyForce(force);
+}
+
+class Camera {
+  PVector pos; //Camera's position 
+  //The Camera should sit in the top left of the window
+ 
+  Camera() {
+    pos = new PVector(0, 0);
+    //You should play with the program and code to see how the staring position can be changed
+  }
+ 
+  void draw() {
+    //I used the mouse to move the camera
+    //The mouse's position is always relative to the screen and not the camera's position
+    //E.g. if the mouse is at 1000,1000 then the mouse's position does not add 1000,1000 to keep up with the camera
+    //if (mouseX < 100) pos.x-=5;
+    //else if (mouseX > width - 100) pos.x+=5;
+    // if (mouseY < 100) pos.y-=5;
+    //else if (mouseY > height - 100) pos.y+=5;
+    //I noticed on the web the program struggles to find the mouse so I made it key pressed
+    if (keyPressed) {
+      if (key == 'w') pos.y -= 5;
+      if (key == 's') pos.y += 5;
+      if (key == 'a') pos.x -= 5;
+      if (key == 'd') pos.x += 5;
+    }
+  }
 }
