@@ -20,7 +20,7 @@ class Attractor {
   void attract(Body m) {
     // get unit vector of direction first
     PVector force = PVector.sub(position, m.position).normalize();
-    force.mult(mass * m.mass);
+    force.mult(mass * m.size);
     force.div(PVector.sub(position, m.position).magSq());  
     m.applyForce(force);
   }

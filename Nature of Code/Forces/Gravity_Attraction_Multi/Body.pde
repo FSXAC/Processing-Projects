@@ -37,11 +37,6 @@ class Body {
   }
 
   void display() {
-    //noStroke();
-    //fill(255, 100);
-    //ellipse(position.x, position.y, radius * 2, radius * 2);
-    stroke(255, 100);
-    strokeWeight(0.5);
     line(position.x, position.y, prev_position.x, prev_position.y);
     update();
   }
