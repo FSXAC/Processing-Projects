@@ -29,11 +29,12 @@ class Hunter {
     strength = 5;
     life = 500;
     maxSpeed = strength;
-    range = 100;
+    range = 50;
     vision = range * 2;
     
     // starting with a food pile
-    foodPile = new Food(position);    
+    exp = 1001;
+    foodPile = new Food(position.x, position.y);    
   }
   
   void display() {
@@ -64,17 +65,46 @@ class Hunter {
   }
   
   void update() {
+    if (foodPile.isThere()) {      
+      // apply force onto hunter around the food pile
+      guard();
+    } else {
+      // either roam around randomly or chase
+      
+      
+      // if there is enough experience, create a new foodpile
+      if (exp >= 1000) {
+        foodPile = new Food(position.x + random(-10, 10), 
+        position.y + random(-10, 10));
+        exp = 0;
+      }
+    }
+  }
+  
+  void guard() {
     distToFood = dist(position.x, position.y, foodPile.location.x, foodPile.location.y);
     if (distToFood < range) {
       // when defending (act random inside the radius of food pile)
-      fill(0, 255, 0);
       force.add(random(-1, 1), random(-1, 1));
     } else {
       // turn back
-      fill(255, 0, 0);
       force.add(foodPile.location.x - position.x, foodPile.location.y - position.y);
     }
-    acceleration.add(force.normalize());
+    
+    // move
+    move(force.normalize());
+  }
+  
+  void roam() {
+    force.add(random(-1, 1), random(-1, 1));
+    move(force.normalize());
+    
+    // if there is any eaters in range, chase them with priority
+    
+  }
+  
+  void move(PVector force_norm) {
+    acceleration.add(force_norm);
     velocity.add(acceleration).limit(maxSpeed);
     
     targetPosition.add(velocity);
