@@ -34,7 +34,7 @@ class Body {
   }
 
   void display() {
-    stroke(0);
+    stroke(255);
     point(position.x, position.y);
     update();
   }

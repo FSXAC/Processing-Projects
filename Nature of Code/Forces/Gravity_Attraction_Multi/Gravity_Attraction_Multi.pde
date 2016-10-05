@@ -14,7 +14,7 @@ Camera worldCamera = new Camera();
 void setup() {
   // screen
   size(1280, 720);
-  background(255);
+  background(0);
   smooth();
     
   // initialize an array of bodies with a single pixel
@@ -40,7 +40,7 @@ void draw() {
   
   //background(0, 0, 0);
   // fading background;
-  fill(255, 15);
+  fill(0, 10);
   noStroke();  
   rect(0, 0, width, height);
   
