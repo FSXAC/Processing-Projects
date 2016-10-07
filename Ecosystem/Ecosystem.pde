@@ -9,7 +9,7 @@ ArrayList<Hunter> hunters = new ArrayList<Hunter>();
 ArrayList<Eater> eaters = new ArrayList<Eater>();
 
 // camera
-float translateX, translateY, scaleFactor;
+float translateX = 0, translateY = 0, scaleFactor = 1;
 
 void setup() {
   size(800, 800);
@@ -17,10 +17,15 @@ void setup() {
   // create the first ever hunter
   hunters.add(new Hunter(true));
   
-  // create 4 new eaters
-  for (int i = 0; i < 4; i++) {
-    eaters.add(new Eater());
+  // more
+  for (int i = 0; i < 1; i++) {
+    hunters.add(new Hunter(false));
   }
+  
+  // create 4 new eaters
+  //for (int i = 0; i < 1; i++) {
+  //  eaters.add(new Eater());
+  //}
 }
 
 void draw() {
@@ -28,8 +33,10 @@ void draw() {
   
   // render hunters
   pushMatrix();
+  
   translate(translateX, translateY);
   scale(scaleFactor);
+  
   render();
   popMatrix();
   
@@ -45,13 +52,4 @@ void render() {
   for (Eater eater:eaters) {
     eater.display();
   }
-}
-
-void mouseWheel(MouseEvent e)
-{
-  scaleFactor += e.getAmount() / 100;
- 
-  translateX -= e.getAmount() * mouseX / 100;
- 
-  translateY -= e.getAmount() * mouseY / 100;
 }

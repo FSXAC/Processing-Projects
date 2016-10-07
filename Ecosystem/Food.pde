@@ -18,7 +18,6 @@ class Food {
     
     // testing shrinking
     if (amount > 0) {
-      amount -= 1;
       size = map(amount, 0, 1000, 0, 40);
     }
   }
