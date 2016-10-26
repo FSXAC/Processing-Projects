@@ -1,9 +1,9 @@
 // gravity based on multiple points
 
-Body[] bodies = new Body[200];
+Body[] bodies = new Body[1000];
 
 // new attractor arrays
-Attractor[] attractors = new Attractor[1];
+Attractor[] attractors = new Attractor[5];
 
 // wrap screen config
 boolean WRAP_SCREEN = false;
@@ -40,9 +40,9 @@ void draw() {
   
   //background(0, 0, 0);
   // fading background;
-  fill(0, 10);
-  noStroke();  
-  rect(0, 0, width, height);
+  //fill(0, 10);
+  //noStroke();  
+  //rect(0, 0, width, height);
   
   
   for (int i=0; i < 2; i++) {

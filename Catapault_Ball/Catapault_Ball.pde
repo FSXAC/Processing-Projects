@@ -22,18 +22,18 @@ void setup() {
 
 void draw() {
   background(0);
-  
+
   for (int i = 0; i < count; i++) {
     balls[i].display();
     balls[i].update();
-    
+
     for (int j = 0; j < count; j++) {
       if (i != j) {
         balls[i].checkCollision(balls[j]);
       }
     }
   }
-  
+
   if (mousePressed) {
     current = new PVector(mouseX, mouseY);
     projection.x = start.x - (mouseX - start.x);

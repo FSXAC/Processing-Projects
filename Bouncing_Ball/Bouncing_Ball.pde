@@ -14,8 +14,8 @@ int time = 0;
 int ptime;
 
 // simulation parameres
-int gravity_interval = 2;
-float gravity = 0;
+int gravity_interval = 5;
+float gravity = 1;
 boolean collide = true;
 boolean warpBoundaries = true;
 
@@ -71,3 +71,7 @@ void draw() {
 //    count++;
 //  }
 //}
+
+void keyPressed() {
+  count = 0;
+}

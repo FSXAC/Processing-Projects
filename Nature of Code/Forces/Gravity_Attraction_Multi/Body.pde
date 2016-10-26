@@ -34,7 +34,7 @@ class Body {
   }
 
   void display() {
-    stroke(255);
+    stroke(10, map(velocity.magSq(), 0, 10, 20, 255), 10);
     point(position.x, position.y);
     update();
   }
