@@ -4,7 +4,7 @@ float newXmag, newYmag = 0;
 
 void setup() {
   size(900, 500, P3D);
-  terrain = new Terrain(20);
+  terrain = new Terrain(8);
 
   // initialize
   terrain.generate(0.1);
@@ -23,17 +23,26 @@ void keyPressed() {
   if (key=='w') {
     rough += 0.1;
   } else if (key == 's') {
-    rough -= 0.1
+    rough -= 0.1;
+  }
+
+  if (key == 'e') {
+    moveVTarget = moveV + 100;
+  } else if (key == 'd') {
+    moveVTarget = moveV - 100;
   }
 }
 
 
 float moveX = 0;
 float moveH = 0;
+float moveV = 0;
+float moveVTarget = moveV;
 
 void draw()  {
   moveX += map(mouseX - width / 2, -(width/2), width/2, 8, -8);
   moveH += map(mouseY - height / 2, -(height/2), height/2, 8, -8);
+  moveV = lerp(moveV, moveVTarget, 0.1);
 
   background(255);
 
@@ -42,8 +51,7 @@ void draw()  {
 
   // move camera
   pushMatrix();
-  translate(width / 2 + moveX, height / 2, -30 + moveH);
-  // translate(width / 2, height / 2, -30);
+  translate(width / 2 + moveX, height / 2 + moveV, -30 + moveH);
 
   rotateX(PI/3);
 
@@ -54,7 +62,7 @@ void draw()  {
 
   stroke(0);
   text(rough, 10, 10);
-  noStroke(0);
+  noStroke();
 }
 
 class Terrain {
@@ -96,10 +104,10 @@ class Terrain {
     roughness = r;
 
     // first set the 4 corners
-    set(0, 0, terrain_size / 2);
-    set(0, max, random(0, terrain_size / 8));
+    set(0, 0, random(0, terrain_size));
+    set(0, max, random(0, terrain_size));
     set(max, 0, random(0, terrain_size));
-    set(max, max, terrain_size / 4);
+    set(max, max, random(0, terrain_size));
 
     divide(max);
   }
@@ -182,21 +190,21 @@ class Terrain {
 
         // first triangle fan
         beginShape(TRIANGLE_FAN);
-        // fill(get(x, y));
+        fill(map(get(x, y), 0, terrain_size / 3, 50, 250));
         vertex(x, y, get(x, y));
-        // fill(get(x + 1, y));
+        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
         vertex(x + 1, y, get(x + 1, y));
-        // fill(get(x, y + 1));
+        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
         vertex(x, y + 1, get(x, y + 1));
         endShape(CLOSE);
 
         // second half
         beginShape(TRIANGLE_FAN);
-        // fill(get(x + 1, y));
+        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
         vertex(x + 1, y, get(x + 1, y));
-        // fill(get(x, y + 1));
+        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
         vertex(x, y + 1, get(x, y + 1));
-        // fill(get(x + 1, y + 1));
+        fill(map(get(x + 1, y + 1), 0, terrain_size / 3, 50, 250));
         vertex(x + 1, y + 1, get(x + 1, y + 1));
 
         endShape(CLOSE);
