@@ -205,22 +205,41 @@ class Terrain {
         // draw triangle and verticies
 
         // first triangle fan
+        // beginShape(TRIANGLE_FAN);
+        // fill(map(get(x, y), 0, terrain_size / 3, 50, 250));
+        // vertex(x, y, get(x, y));
+        // fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
+        // vertex(x + 1, y, get(x + 1, y));
+        // fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
+        // vertex(x, y + 1, get(x, y + 1));
+        // endShape(CLOSE);
+        //
+        // // second half
+        // beginShape(TRIANGLE_FAN);
+        // fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
+        // vertex(x + 1, y, get(x + 1, y));
+        // fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
+        // vertex(x, y + 1, get(x, y + 1));
+        // fill(map(get(x + 1, y + 1), 0, terrain_size / 3, 50, 250));
+        // vertex(x + 1, y + 1, get(x + 1, y + 1));
+
+        // first half
         beginShape(TRIANGLE_FAN);
-        fill(map(get(x, y), 0, terrain_size / 3, 50, 250));
+        fill(get(x + 1, y) - get(x, y) * 50 + 128);
         vertex(x, y, get(x, y));
-        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
+        fill(get(x, y + 1) - get(x, y) * 50 + 128);
         vertex(x + 1, y, get(x + 1, y));
-        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
+        fill(get(x, y) - get(x, y) * 50 + 128);
         vertex(x, y + 1, get(x, y + 1));
         endShape(CLOSE);
 
         // second half
         beginShape(TRIANGLE_FAN);
-        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
+        fill(get(x, y + 1) - get(x, y) * 50 + 128);
         vertex(x + 1, y, get(x + 1, y));
-        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
+        fill(get(x + 1, y + 1) - get(x, y) * 50 + 128);
         vertex(x, y + 1, get(x, y + 1));
-        fill(map(get(x + 1, y + 1), 0, terrain_size / 3, 50, 250));
+        fill(get(x + 1, y) - get(x, y) * 50 + 128);
         vertex(x + 1, y + 1, get(x + 1, y + 1));
 
         endShape(CLOSE);
