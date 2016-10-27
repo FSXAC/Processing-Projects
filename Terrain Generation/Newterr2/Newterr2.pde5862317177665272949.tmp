@@ -1,5 +1,38 @@
+Terrain terrain;
+float xmag, ymag = 0;
+float newXmag, newYmag = 0;
+
+void setup() {
+  size(900, 500, P3D);
+  terrain = new Terrain(4);
+
+  // initialize
+  terrain.generate(0.5);
+  
+  noStroke();
+}
+
+void draw()  {
+  background(255);
+  
+  // light
+  directionalLight(204, 204, 204, 0, 0, -1); 
+
+  // move camera
+  pushMatrix();
+  translate(width / 2 + map(mouseX, 0, width, -10, 10), 
+  height / 2 + map(mouseY, 0, height, -10, 10), -30);
+
+  rotateY(PI/4);
+
+  scale(15);
+
+  terrain.display();
+  popMatrix();
+}
+
 class Terrain {
-  private final int size;
+  private final int terrain_size;
   private final int max;
   private float[] map;
   private float roughness;
@@ -8,53 +41,52 @@ class Terrain {
   Terrain(int detail) {
     // size of the grid - squared for squared area, +1 for the center grid
     // more specifically side length of the grid
-    size = pow(detail, 2) + 1;
+    terrain_size = int(pow(detail, 2) + 1);
 
     // maximum of each dimension
-    max = size - 1;
+    max = terrain_size - 1;
 
     // use an array to store 2D height map
-    map = new float[size * size];
-
-    // generate map using MIDPOINT DISPLACEMENT METHOD
-    // set the 4 corners
-    map[0, 0]
+    map = new float[terrain_size * terrain_size];
   }
 
   // gets the value of a point on the map
   private float get(int x, int y) {
     // check that x and y are in bound
     if (x < 0 || x > max || y < 0 || y > max) {return -1;}
-    else {return map[x + size * y];}
+    else {return map[x + terrain_size * y];}
   }
 
   // sets the value of a point on the map
   private void set(int x, int y, float value) {
     if (!(x < 0 || x > max || y < 0 || y > max)) {
-      map[x + size * y] = value;
+      map[x + terrain_size * y] = value;
     }
   }
 
-  // function that generates the terrain
-  public void generate() {
+  // function that generate map using MIDPOINT DISPLACEMENT METHOD
+  public void generate(float r) {
+    // set roughness
+    roughness = r;
+
     // first set the 4 corners
-    set(0, 0, max);
+    set(0, 0, 0);
     set(0, max, max / 2);
     set(max, 0, max / 2);
-    set(max, max, max);
+    set(max, max, 0);
 
     divide(max);
   }
 
   // midpoint displacement algorithmn, divide
   // (based on github.com/hunterloftis/playfuljs-demos/blob/gh-pages/terrain)
-  private int divide (int size) {
+  private void divide (int size) {
     int x, y;
     int half = size / 2;
     float scale = roughness * size;
 
     // stop
-    if (half < 1) return 0;
+    if (half < 1) return;
 
 
     for (y = half; y < max; y += size) {
@@ -116,12 +148,24 @@ class Terrain {
     // set point as average plus random offset
     set(x, y, av + offset);
   }
-}
 
-void setup() {
-  size(1280, 720, P3D);
-}
+  public void display() {
+    for (int y = 0; y < terrain_size - 1; y++) {
+      for (int x = 0; x < terrain_size - 1; x++) {
+        // draw triangle and verticies
+        beginShape(QUAD);
+        // first triangle fan
+        vertex(x, y, get(x, y));
+        vertex(x + 1, y, get(x + 1, y));
+        vertex(x, y + 1, get(x, y + 1));
 
-void draw() {
+        // second half
+        //vertex(x + 1, y, get(x + 1, y));
+        //vertex(x, y + 1, get(x, y + 1));
+        vertex(x + 1, y + 1, get(x + 1, y + 1));
 
+        endShape();
+      }
+    }
+  }
 }
