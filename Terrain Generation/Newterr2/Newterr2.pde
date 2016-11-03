@@ -188,43 +188,44 @@ class Terrain {
       for (int x = 0; x < terrain_size - 1; x++) {
         // draw triangle and verticies
 
-        // first triangle fan
-        beginShape(TRIANGLE_FAN);
-        fill(map(get(x, y), 0, terrain_size / 3, 50, 250));
-        vertex(x, y, get(x, y));
-        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
-        vertex(x + 1, y, get(x + 1, y));
-        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
-        vertex(x, y + 1, get(x, y + 1));
-        endShape(CLOSE);
-
-        // second half
-        beginShape(TRIANGLE_FAN);
-        fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
-        vertex(x + 1, y, get(x + 1, y));
-        fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
-        vertex(x, y + 1, get(x, y + 1));
-        fill(map(get(x + 1, y + 1), 0, terrain_size / 3, 50, 250));
-        vertex(x + 1, y + 1, get(x + 1, y + 1));
-
-        // first half
+        // // first triangle fan
         // beginShape(TRIANGLE_FAN);
-        // fill(get(x + 1, y) - get(x, y) * 50 + 128);
+        // fill(map(get(x, y), 0, terrain_size / 3, 50, 250));
         // vertex(x, y, get(x, y));
-        // fill(get(x, y + 1) - get(x, y) * 50 + 128);
+        // fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
         // vertex(x + 1, y, get(x + 1, y));
-        // fill(get(x, y) - get(x, y) * 50 + 128);
+        // fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
         // vertex(x, y + 1, get(x, y + 1));
         // endShape(CLOSE);
         //
         // // second half
         // beginShape(TRIANGLE_FAN);
-        // fill(get(x, y + 1) - get(x, y) * 50 + 128);
+        // fill(map(get(x + 1, y), 0, terrain_size / 3, 50, 250));
         // vertex(x + 1, y, get(x + 1, y));
-        // fill(get(x + 1, y + 1) - get(x, y) * 50 + 128);
+        // fill(map(get(x, y + 1), 0, terrain_size / 3, 50, 250));
         // vertex(x, y + 1, get(x, y + 1));
-        // fill(get(x + 1, y) - get(x, y) * 50 + 128);
+        // fill(map(get(x + 1, y + 1), 0, terrain_size / 3, 50, 250));
         // vertex(x + 1, y + 1, get(x + 1, y + 1));
+
+        // first half
+        fill(200);
+        beginShape(TRIANGLE_FAN);
+        // fill(get(x + 1, y) - get(x, y) * 50 + 128);
+        vertex(x, y, get(x, y));
+        // fill(get(x, y + 1) - get(x, y) * 50 + 128);
+        vertex(x + 1, y, get(x + 1, y));
+        // fill(get(x, y) - get(x, y) * 50 + 128);
+        vertex(x, y + 1, get(x, y + 1));
+        endShape(CLOSE);
+
+        // second half
+        beginShape(TRIANGLE_FAN);
+        // fill(get(x, y + 1) - get(x, y) * 50 + 128);
+        vertex(x + 1, y, get(x + 1, y));
+        // fill(get(x + 1, y + 1) - get(x, y) * 50 + 128);
+        vertex(x, y + 1, get(x, y + 1));
+        // fill(get(x + 1, y) - get(x, y) * 50 + 128);
+        vertex(x + 1, y + 1, get(x + 1, y + 1));
 
         endShape(CLOSE);
       }
