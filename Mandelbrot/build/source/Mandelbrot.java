@@ -14,6 +14,8 @@ import java.io.IOException;
 
 public class Mandelbrot extends PApplet {
 
+int maxIteration;
+
 public void setup() {
   
   
@@ -24,6 +26,8 @@ public void draw() {
 }
 
 public void makeFractal() {
+  maxIteration = PApplet.parseInt(map(mouseY, 0, height, 1, 1000));
+
   loadPixels();
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
@@ -42,7 +46,7 @@ public void makeFractal() {
       int n    = 0;
       float z = 0;
 
-      while (n < 100) {
+      while (n < maxIteration) {
         // calculate a^2 - b^2
         float real    = a * a - b * b;
         float complex = 2 * a * b;
@@ -59,9 +63,11 @@ public void makeFractal() {
         n++;
       }
 
-      float brightness = map(n, 0, 100, 0, 255);
+      float brightness = map(n, 0, maxIteration, 0, 1);
+      brightness = map(sqrt(brightness), 0, 1, 0, 255);
+      float brightness2 = (n * 16) % 255;
 
-      pixels[y * width + x] = color(0, 100 - brightness, 0);
+      pixels[y * width + x] = color(0, brightness, 0);
     }
   }
   updatePixels();
