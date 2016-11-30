@@ -11,7 +11,7 @@ void setup() {
   landwidth = width / TERRAIN_SIZE;
   landlength = height / TERRAIN_SIZE;
 
-  generateLand(0, 0.15);
+  generateLand(0, 0.5);
 }
 
 void draw() {

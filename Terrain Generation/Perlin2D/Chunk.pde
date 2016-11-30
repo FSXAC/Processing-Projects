@@ -11,9 +11,10 @@ class Chunk {
   Chunk(float g, int x, int y) {
     location = new PVector(x * TERRAIN_SIZE, y * TERRAIN_SIZE);
     growth  = default_grow_rate;
-    if (g < low_cutoff) maxveg = 0;
-    else if (g > high_cutoff) maxveg = 255;
-    else maxveg = g;
+    //if (g < low_cutoff) maxveg = 0;
+    //else if (g > high_cutoff) maxveg = 255;
+    //else maxveg = g;
+    maxveg = g;
   }
 
   void display() {
