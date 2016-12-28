@@ -74,7 +74,7 @@ public void makeFractal() {
 }
   public void settings() {  size(500, 500);  pixelDensity(1); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "--present", "--window-color=#272727", "--stop-color=#cccccc", "Mandelbrot" };
+    String[] appletArgs = new String[] { "Mandelbrot" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {

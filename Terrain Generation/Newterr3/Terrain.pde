@@ -32,7 +32,7 @@ class Terrain {
   }
 
   private void fillColour(float level) {
-    if (level < T_THRES * 1.1)
+    if (level < T_THRES)
       // set water depth color
       fill(lerpColor(
         color(58, 42, 14),
@@ -42,7 +42,7 @@ class Terrain {
     else fill(lerpColor(
         color(11, 56, 8),
         color(255, 255, 255),
-        map(level, T_THRES * 1.1, T_AMP, 0, 1)
+        map(level, T_THRES, T_AMP, 0, 1)
       ));
   }
 

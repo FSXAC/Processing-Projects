@@ -111,11 +111,12 @@ public void draw() {
   popMatrix();
 
   // draw water
-  pushMatrix();
-  fill(59, 170, 175, 100);
-  translate(0, T_THRES / 2, 0);
-  box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
-  popMatrix();
+  // pushMatrix();
+  // fill(59, 170, 175, 100);
+  // translate(0, T_THRES / 2, 0);
+  // box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
+  // popMatrix();
+  drawWater(0.9f * T_THRES);
 
   // key hold events
   checkKeyInput();
@@ -189,6 +190,53 @@ public void placeSphere(float x, float z, float radius) {
 }
 
 // draws water that has transluscent gradient
+public void drawWater(float water_level) {
+  pushMatrix();
+  translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
+
+  beginShape(QUADS);
+  fill(59, 170, 175, 100);
+  vertex(0, water_level, 0);
+  vertex(T_SIZE * T_DIM, water_level, 0);
+  vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
+  vertex(0, water_level, T_SIZE * T_DIM);
+
+  // fill(59, 170, 175, 100);
+  // vertex(0, water_level, 0);
+  // vertex(T_SIZE * T_DIM, water_level, 0);
+  // fill(8, 25, 56, 200);
+  // vertex(0, 0, 0);
+  // vertex(T_SIZE * T_DIM, 0, 0);
+  //
+  // fill(59, 170, 175, 100);
+  // vertex(0, water_level, 0);
+  // vertex(0, water_level, T_SIZE * T_DIM);
+  // fill(8, 25, 56, 200);
+  // vertex(0, 0, 0);
+  // vertex(0, 0, T_SIZE * T_DIM);
+  //
+  // fill(59, 170, 175, 100);
+  // vertex(T_SIZE * T_DIM, water_level, 0);
+  // vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
+  // fill(8, 25, 56, 200);
+  // vertex(T_SIZE * T_DIM, 0, 0);
+  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  //
+  // fill(59, 170, 175, 100);
+  // vertex(0, water_level, T_SIZE * T_DIM);
+  // vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
+  // fill(8, 25, 56, 200);
+  // vertex(0, 0, T_SIZE * T_DIM);
+  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  //
+  // fill(8, 25, 56, 200);
+  // vertex(0, 0, 0);
+  // vertex(T_SIZE * T_DIM, 0, 0);
+  // vertex(0, 0, T_SIZE * T_DIM);
+  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  endShape(CLOSE);
+  popMatrix();
+}
 class Terrain {
   private int size;
   private float[] map;
@@ -223,7 +271,7 @@ class Terrain {
   }
 
   private void fillColour(float level) {
-    if (level < T_THRES * 1.1f)
+    if (level < T_THRES)
       // set water depth color
       fill(lerpColor(
         color(58, 42, 14),
@@ -233,7 +281,7 @@ class Terrain {
     else fill(lerpColor(
         color(11, 56, 8),
         color(255, 255, 255),
-        map(level, T_THRES * 1.1f, T_AMP, 0, 1)
+        map(level, T_THRES, T_AMP, 0, 1)
       ));
   }
 
