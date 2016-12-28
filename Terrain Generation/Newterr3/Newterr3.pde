@@ -9,12 +9,14 @@ float SCALE_SPEED    = 0.03;
 float SUN_SPEED      = 0.005;
 
 // TERRAIN
-int T_DIM     = 100;
-float T_SIZE  = 5;
-float T_AMP   = 200;
-float T_RES   = 0.03;
-float T_THRES = T_AMP * 0.4;
-Terrain T     = new Terrain(T_DIM);
+int T_DIM       = 100;
+float T_SIZE    = 5;
+float T_AMP     = 200;
+float T_RES     = 0.03;
+float T_THRES   = T_AMP * 0.4;
+Terrain T       = new Terrain(T_DIM);
+color WATER_TOP = color(81, 215, 239, 200);
+color WATER_BTM = color(19, 52, 58, 200);
 
 // MODE
 // 1 - lateral movement
@@ -95,12 +97,7 @@ void draw() {
   popMatrix();
 
   // draw water
-  // pushMatrix();
-  // fill(59, 170, 175, 100);
-  // translate(0, T_THRES / 2, 0);
-  // box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
-  // popMatrix();
-  drawWater(0.9 * T_THRES);
+  drawWater(0.95 * T_THRES);
 
   // key hold events
   checkKeyInput();
@@ -179,41 +176,41 @@ void drawWater(float water_level) {
   translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
 
   beginShape(QUADS);
-  fill(59, 170, 175, 100);
+  fill(WATER_TOP);
   vertex(0, water_level, 0);
   vertex(T_SIZE * T_DIM, water_level, 0);
   vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
   vertex(0, water_level, T_SIZE * T_DIM);
 
-  fill(59, 170, 175, 100);
+  fill(WATER_TOP);
   vertex(0, water_level, 0);
   vertex(T_SIZE * T_DIM, water_level, 0);
-  fill(8, 25, 56, 200);
+  fill(WATER_BTM);
   vertex(T_SIZE * T_DIM, 0, 0);
   vertex(0, 0, 0);
 
-  fill(59, 170, 175, 100);
+  fill(WATER_TOP);
   vertex(0, water_level, 0);
   vertex(0, water_level, T_SIZE * T_DIM);
-  fill(8, 25, 56, 200);
+  fill(WATER_BTM);
   vertex(0, 0, T_SIZE * T_DIM);
   vertex(0, 0, 0);
 
-  fill(59, 170, 175, 100);
+  fill(WATER_TOP);
   vertex(T_SIZE * T_DIM, water_level, 0);
   vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
-  fill(8, 25, 56, 200);
+  fill(WATER_BTM);
   vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
   vertex(T_SIZE * T_DIM, 0, 0);
 
-  fill(59, 170, 175, 100);
+  fill(WATER_TOP);
   vertex(0, water_level, T_SIZE * T_DIM);
   vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
-  fill(8, 25, 56, 200);
+  fill(WATER_BTM);
   vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
   vertex(0, 0, T_SIZE * T_DIM);
 
-  fill(8, 25, 56, 200);
+  fill(WATER_BTM);
   vertex(0, 0, 0);
   vertex(T_SIZE * T_DIM, 0, 0);
   vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
