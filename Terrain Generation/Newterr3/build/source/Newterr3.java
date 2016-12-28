@@ -17,13 +17,18 @@ public class Newterr3 extends PApplet {
 // Using 2D perlin noise instead of midpoint displacement
 
 // GLOBAL VARIABLES
-Terrain T = new Terrain(10);
-
 // GRAPHICS
 float LERP_SPEED     = 0.1f;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1f;
 float SCALE_SPEED    = 0.03f;
+
+// TERRAIN
+int T_DIM    = 100;
+float T_SIZE = 5;
+float T_AMP  = 200;
+float T_RES  = 0.05f;
+Terrain T    = new Terrain(T_DIM);
 
 // MODE
 // 1 - lateral movement
@@ -59,7 +64,7 @@ public void setup() {
 // Main draw loop function
 public void draw() {
   // background
-  background(10, 15, 50);
+  background(230);
 
   // CAMERA
   // ortho();
@@ -67,8 +72,8 @@ public void draw() {
   // view controls
   // lateral
   translate(offset_lateral[0],
-            offset_lateral[1],
-            offset_lateral[2]);
+    offset_lateral[1],
+    offset_lateral[2]);
 
   // rotational
   rotateX(offset_rotation[0]);
@@ -81,9 +86,9 @@ public void draw() {
   // LIGHTING
   pointLight(
     255, 255, 255,
-    sin(frameCount * 0.01f) * 80,
-    cos(frameCount * 0.01f) * 50 + 50,
-    cos(frameCount * 0.01f) * 200);
+    sin(frameCount * 0.01f) * T_SIZE * T_DIM,
+    cos(frameCount * 0.01f) * 2 * T_AMP + 2 * T_AMP,
+    cos(frameCount * 0.01f) * T_SIZE * T_DIM);
 
   // drawing standard unit axis
   // noFill();
@@ -91,13 +96,19 @@ public void draw() {
   drawAxis();
 
   noStroke();
+  // pushMatrix();
+  // translate(0, -10, 0);
+  // box(200, 20, 200);
+  // popMatrix();
+  // placeSphere(0, 0, 30);
+  // placeSphere(20, 20, 10);
+  // placeSphere(-110, 25, 100);
+
+  // display test terrain
   pushMatrix();
-  translate(0, -10, 0);
-  box(200, 20, 200);
+  translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
+  T.display();
   popMatrix();
-  placeSphere(0, 0, 30);
-  placeSphere(20, 20, 10);
-  placeSphere(-110, 25, 100);
 
   // key hold events
   checkKeyInput();
@@ -125,6 +136,8 @@ public void checkKeyInput() {
         case 's': tgt_offset_lateral[2] -= LATERAL_SPEED; break;
         case 'a': tgt_offset_lateral[0] += LATERAL_SPEED; break;
         case 'd': tgt_offset_lateral[0] -= LATERAL_SPEED; break;
+        case 'r': tgt_offset_lateral[1] += LATERAL_SPEED; break;
+        case 'f': tgt_offset_lateral[1] -= LATERAL_SPEED; break;
       }
     }
   }
@@ -184,15 +197,23 @@ class Terrain {
   public void generate() {
     for (int y = 0; y < this.size; y++) {
       for (int x = 0; x < this.size; x++) {
-        this.map[y * this.size + x] = 10 * noise(x, y);
+        this.map[y * this.size + x] = T_AMP * noise(x * T_RES, y * T_RES);
       }
     }
   }
 
-  // *** GETTERS and SETTERS
+  // returns the height at specific x and y
   private float get(int x, int y) {
-    if (x < 0 || y < 0 || x >= this.size || y >= this.size) return -1;
-    else return map[y * size + x];
+    // if (x < 0 || y < 0)                        return get(x + 1, y + 1);
+    // else if (x >= this.size || y >= this.size) return get(x - 1, y - 1);
+    // else                                       return map[y * size + x];
+    if (x < 0 && y >= 0 && y < this.size)               return get(x + 1, y);
+    else if (x >= 0 && y < 0 && x < this.size)          return get(x, y + 1);
+    else if (y >= 0 && x >= this.size && y < this.size) return get(x - 1, y);
+    else if (x >= 0 && x < this.size && y >= this.size) return get(x, y - 1);
+    else if (x < 0 && y < 0)                            return get(0, 0);
+    else if (x >= this.size && y >= this.size)          return get(x - 1, y - 1);
+    else                                                return map[y * size + x];
   }
 
   public void display() {
@@ -200,16 +221,16 @@ class Terrain {
       for (int x = 0; x < this.size; x++) {
         // draw triangle and verticies
         beginShape(TRIANGLE_FAN);
-        vertex(x, y, this.get(x, y));
-        vertex(x + 1, y, this.get(x + 1, y));
-        vertex(x, y + 1, this.get(x, y + 1));
+        vertex(x * T_SIZE,       this.get(x, y),     y * T_SIZE);
+        vertex((x + 1) * T_SIZE, this.get(x + 1, y), y * T_SIZE);
+        vertex(x * T_SIZE,       this.get(x, y + 1), (y + 1) * T_SIZE);
         endShape(CLOSE);
 
         // second half of the triangle
         beginShape(TRIANGLE_FAN);
-        vertex(x + 1, y, get(x + 1, y));
-        vertex(x, y + 1, get(x, y + 1));
-        vertex(x + 1, y + 1, get(x + 1, y + 1));
+        vertex((x + 1) * T_SIZE, get(x + 1, y),     y * T_SIZE);
+        vertex(x * T_SIZE,       get(x, y + 1),     (y + 1) * T_SIZE);
+        vertex((x + 1) * T_SIZE, get(x + 1, y + 1), (y + 1) * T_SIZE);
         endShape(CLOSE);
       }
     }

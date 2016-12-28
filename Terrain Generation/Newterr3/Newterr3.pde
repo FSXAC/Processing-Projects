@@ -1,13 +1,18 @@
 // Using 2D perlin noise instead of midpoint displacement
 
 // GLOBAL VARIABLES
-Terrain T = new Terrain(10);
-
 // GRAPHICS
 float LERP_SPEED     = 0.1;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1;
 float SCALE_SPEED    = 0.03;
+
+// TERRAIN
+int T_DIM    = 100;
+float T_SIZE = 5;
+float T_AMP  = 200;
+float T_RES  = 0.05;
+Terrain T    = new Terrain(T_DIM);
 
 // MODE
 // 1 - lateral movement
@@ -43,7 +48,7 @@ void setup() {
 // Main draw loop function
 void draw() {
   // background
-  background(10, 15, 50);
+  background(230);
 
   // CAMERA
   // ortho();
@@ -51,8 +56,8 @@ void draw() {
   // view controls
   // lateral
   translate(offset_lateral[0],
-            offset_lateral[1],
-            offset_lateral[2]);
+    offset_lateral[1],
+    offset_lateral[2]);
 
   // rotational
   rotateX(offset_rotation[0]);
@@ -65,9 +70,9 @@ void draw() {
   // LIGHTING
   pointLight(
     255, 255, 255,
-    sin(frameCount * 0.01) * 80,
-    cos(frameCount * 0.01) * 50 + 50,
-    cos(frameCount * 0.01) * 200);
+    sin(frameCount * 0.01) * T_SIZE * T_DIM,
+    cos(frameCount * 0.01) * 2 * T_AMP + 2 * T_AMP,
+    cos(frameCount * 0.01) * T_SIZE * T_DIM);
 
   // drawing standard unit axis
   // noFill();
@@ -75,13 +80,19 @@ void draw() {
   drawAxis();
 
   noStroke();
+  // pushMatrix();
+  // translate(0, -10, 0);
+  // box(200, 20, 200);
+  // popMatrix();
+  // placeSphere(0, 0, 30);
+  // placeSphere(20, 20, 10);
+  // placeSphere(-110, 25, 100);
+
+  // display test terrain
   pushMatrix();
-  translate(0, -10, 0);
-  box(200, 20, 200);
+  translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
+  T.display();
   popMatrix();
-  placeSphere(0, 0, 30);
-  placeSphere(20, 20, 10);
-  placeSphere(-110, 25, 100);
 
   // key hold events
   checkKeyInput();
@@ -109,6 +120,8 @@ void checkKeyInput() {
         case 's': tgt_offset_lateral[2] -= LATERAL_SPEED; break;
         case 'a': tgt_offset_lateral[0] += LATERAL_SPEED; break;
         case 'd': tgt_offset_lateral[0] -= LATERAL_SPEED; break;
+        case 'r': tgt_offset_lateral[1] += LATERAL_SPEED; break;
+        case 'f': tgt_offset_lateral[1] -= LATERAL_SPEED; break;
       }
     }
   }
