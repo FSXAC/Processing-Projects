@@ -97,21 +97,8 @@ void draw() {
   // draw water
   pushMatrix();
   fill(59, 170, 175, 100);
-  translate(0, 5 * T_THRES / 12, 0);
-  box(T_SIZE * T_DIM, 5 * T_THRES / 6, T_SIZE * T_DIM);
-
-  translate(0, 4 * T_THRES / 12, 0);
-  box(T_SIZE * T_DIM, 4 * T_THRES / 6, T_SIZE * T_DIM);
-
-  translate(0, 3 * T_THRES / 12, 0);
-  box(T_SIZE * T_DIM, 3 * T_THRES / 6, T_SIZE * T_DIM);
-
-  translate(0, 2 * T_THRES / 12, 0);
-  box(T_SIZE * T_DIM, 2 * T_THRES / 6, T_SIZE * T_DIM);
-
-  translate(0, 1 * T_THRES / 12, 0);
-  box(T_SIZE * T_DIM, 1 * T_THRES / 6, T_SIZE * T_DIM);
-
+  translate(0, T_THRES / 2, 0);
+  box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
   popMatrix();
 
   // key hold events

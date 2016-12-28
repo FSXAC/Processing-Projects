@@ -31,15 +31,19 @@ class Terrain {
     else                                                return map[y * size + x];
   }
 
-  private void fillWater(float level) {
-    if (level < T_THRES)
+  private void fillColour(float level) {
+    if (level < T_THRES * 1.1)
       // set water depth color
       fill(lerpColor(
         color(58, 42, 14),
         color(224, 219, 197),
-        map(level, T_THRES / 2, T_THRES, 0, 1))
-      );
-    else fill(255);
+        map(level, T_THRES / 2, T_THRES, 0, 1)
+      ));
+    else fill(lerpColor(
+        color(11, 56, 8),
+        color(255, 255, 255),
+        map(level, T_THRES * 1.1, T_AMP, 0, 1)
+      ));
   }
 
   public void display() {
@@ -47,21 +51,21 @@ class Terrain {
       for (int x = 0; x < this.size; x++) {
         // draw triangle and verticies
         beginShape(TRIANGLE_FAN);
-        fillWater(this.get(x, y));
+        fillColour(this.get(x, y));
         vertex(x * T_SIZE,       this.get(x, y),     y * T_SIZE);
-        fillWater(this.get(x+1, y));
+        fillColour(this.get(x+1, y));
         vertex((x + 1) * T_SIZE, this.get(x + 1, y), y * T_SIZE);
-        fillWater(this.get(x, y+1));
+        fillColour(this.get(x, y+1));
         vertex(x * T_SIZE,       this.get(x, y + 1), (y + 1) * T_SIZE);
         endShape(CLOSE);
 
         // second half of the triangle
         beginShape(TRIANGLE_FAN);
-        fillWater(this.get(x+1, y));
+        fillColour(this.get(x+1, y));
         vertex((x + 1) * T_SIZE, get(x + 1, y),     y * T_SIZE);
-        fillWater(this.get(x, y+1));
+        fillColour(this.get(x, y+1));
         vertex(x * T_SIZE,       get(x, y + 1),     (y + 1) * T_SIZE);
-        fillWater(this.get(x+1, y+1));
+        fillColour(this.get(x+1, y+1));
         vertex((x + 1) * T_SIZE, get(x + 1, y + 1), (y + 1) * T_SIZE);
         endShape(CLOSE);
       }
