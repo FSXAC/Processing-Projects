@@ -27,13 +27,18 @@ int camera_mode = 1;
 // VIEW OFFSET
 // float offset_rotation[] = {-PI / 2, PI, -PI / 2};
 float offset_rotation[] = {-PI, PI / 2, 0};
-float offset_lateral[]  = {width / 2, height / 2, 0};
+float offset_lateral[] = {0, 0, 0};
 float offset_scale = 1;
 
 // Setup function
 public void setup() {
   // display settings
   
+
+  // configure lateral offset
+  offset_lateral[0] = width / 2;
+  offset_lateral[1] = height / 2;
+  offset_lateral[2] = 0;
 
   // initialize terrain
   T.generate();
@@ -49,10 +54,9 @@ public void draw() {
 
   // view controls
   // lateral
-  // translate(offset_lateral[0],
-  //           offset_lateral[1],
-  //           offset_lateral[2]);
-  translate(width / 2, height / 2, 0);
+  translate(offset_lateral[0],
+            offset_lateral[1],
+            offset_lateral[2]);
 
   // rotational
   rotateX(offset_rotation[0]);
@@ -63,7 +67,11 @@ public void draw() {
   scale(offset_scale);
 
   // LIGHTING
-  pointLight(255, 255, 255, sin(frameCount * 0.01f) * 80, sin(frameCount * 0.01f) * 50 + 50, cos(frameCount * 0.01f) * 200);
+  pointLight(
+    255, 255, 255,
+    sin(frameCount * 0.01f) * 80,
+    cos(frameCount * 0.01f) * 50 + 50,
+    cos(frameCount * 0.01f) * 200);
 
   // drawing standard unit axis
   // noFill();
@@ -72,10 +80,12 @@ public void draw() {
 
   noStroke();
   pushMatrix();
-  translate(0, -5, 0);
-  box(100, 10, 100);
+  translate(0, -10, 0);
+  box(200, 20, 200);
   popMatrix();
-  placeSphere(0, 0, 10);
+  placeSphere(0, 0, 30);
+  placeSphere(20, 20, 10);
+  placeSphere(-110, 25, 100);
 
   // key hold events
   if (keyPressed) {
@@ -90,7 +100,10 @@ public void draw() {
       }
     } else if (camera_mode == 2) {
       switch(key) {
-        // case 'w': offset_lateral[0] +=
+        case 'w': offset_lateral[2] += 3; break; // FIXME
+        case 's': offset_lateral[2] -= 3; break;
+        case 'a': offset_lateral[0] += 3; break;
+        case 'd': offset_lateral[0] -= 3; break;
       }
     }
   }
