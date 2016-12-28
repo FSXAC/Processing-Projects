@@ -201,39 +201,39 @@ public void drawWater(float water_level) {
   vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
   vertex(0, water_level, T_SIZE * T_DIM);
 
-  // fill(59, 170, 175, 100);
-  // vertex(0, water_level, 0);
-  // vertex(T_SIZE * T_DIM, water_level, 0);
-  // fill(8, 25, 56, 200);
-  // vertex(0, 0, 0);
-  // vertex(T_SIZE * T_DIM, 0, 0);
-  //
-  // fill(59, 170, 175, 100);
-  // vertex(0, water_level, 0);
-  // vertex(0, water_level, T_SIZE * T_DIM);
-  // fill(8, 25, 56, 200);
-  // vertex(0, 0, 0);
-  // vertex(0, 0, T_SIZE * T_DIM);
-  //
-  // fill(59, 170, 175, 100);
-  // vertex(T_SIZE * T_DIM, water_level, 0);
-  // vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
-  // fill(8, 25, 56, 200);
-  // vertex(T_SIZE * T_DIM, 0, 0);
-  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
-  //
-  // fill(59, 170, 175, 100);
-  // vertex(0, water_level, T_SIZE * T_DIM);
-  // vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
-  // fill(8, 25, 56, 200);
-  // vertex(0, 0, T_SIZE * T_DIM);
-  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
-  //
-  // fill(8, 25, 56, 200);
-  // vertex(0, 0, 0);
-  // vertex(T_SIZE * T_DIM, 0, 0);
-  // vertex(0, 0, T_SIZE * T_DIM);
-  // vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  fill(59, 170, 175, 100);
+  vertex(0, water_level, 0);
+  vertex(T_SIZE * T_DIM, water_level, 0);
+  fill(8, 25, 56, 200);
+  vertex(T_SIZE * T_DIM, 0, 0);
+  vertex(0, 0, 0);
+
+  fill(59, 170, 175, 100);
+  vertex(0, water_level, 0);
+  vertex(0, water_level, T_SIZE * T_DIM);
+  fill(8, 25, 56, 200);
+  vertex(0, 0, T_SIZE * T_DIM);
+  vertex(0, 0, 0);
+
+  fill(59, 170, 175, 100);
+  vertex(T_SIZE * T_DIM, water_level, 0);
+  vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
+  fill(8, 25, 56, 200);
+  vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  vertex(T_SIZE * T_DIM, 0, 0);
+
+  fill(59, 170, 175, 100);
+  vertex(0, water_level, T_SIZE * T_DIM);
+  vertex(T_SIZE * T_DIM, water_level, T_SIZE * T_DIM);
+  fill(8, 25, 56, 200);
+  vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  vertex(0, 0, T_SIZE * T_DIM);
+
+  fill(8, 25, 56, 200);
+  vertex(0, 0, 0);
+  vertex(T_SIZE * T_DIM, 0, 0);
+  vertex(T_SIZE * T_DIM, 0, T_SIZE * T_DIM);
+  vertex(0, 0, T_SIZE * T_DIM);
   endShape(CLOSE);
   popMatrix();
 }
