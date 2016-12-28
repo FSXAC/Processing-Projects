@@ -93,6 +93,7 @@ void draw() {
   translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
 
   // draw main terrain
+  T.generate();
   T.display();
   popMatrix();
 
