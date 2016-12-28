@@ -24,14 +24,14 @@ color WATER_BTM = color(19, 52, 58, 200);
 int camera_mode = 1;
 
 // VIEW OFFSET
-// float offset_rotation[] = {-PI / 2, PI, -PI / 2};
-float offset_rotation[] = {0, 0, 0};
-float offset_lateral[]  = {0, 0, 0};
+// float offset_rotation = {-PI / 2, PI, -PI / 2};
+float[] offset_rotation = {0, 0, 0};
+float[] offset_lateral  = {0, 0, 0};
 float offset_scale      = 2;
 
 // for lerping
-float tgt_offset_rotation[] = {-PI, PI / 2, 0};
-float tgt_offset_lateral[]  = {0, 0, 0};
+float[] tgt_offset_rotation = {-PI, PI / 2, 0};
+float[] tgt_offset_lateral  = {0, 0, 0};
 float tgt_offset_scale      = 1;
 
 
@@ -128,6 +128,15 @@ void checkKeyInput() {
         case 'd': tgt_offset_lateral[0] -= LATERAL_SPEED; break;
         case 'r': tgt_offset_lateral[1] += LATERAL_SPEED; break;
         case 'f': tgt_offset_lateral[1] -= LATERAL_SPEED; break;
+      }
+    }
+
+    if (key == CODED) {
+      switch(keyCode) {
+        case UP   : T.moveTerrain(5, 0); break;
+        case DOWN : T.moveTerrain(-5, 0); break;
+        case LEFT : T.moveTerrain(0, 5); break;
+        case RIGHT: T.moveTerrain(0, -5); break;
       }
     }
   }

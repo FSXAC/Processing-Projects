@@ -40,14 +40,14 @@ int WATER_BTM = color(19, 52, 58, 200);
 int camera_mode = 1;
 
 // VIEW OFFSET
-// float offset_rotation[] = {-PI / 2, PI, -PI / 2};
-float offset_rotation[] = {0, 0, 0};
-float offset_lateral[]  = {0, 0, 0};
+// float offset_rotation = {-PI / 2, PI, -PI / 2};
+float[] offset_rotation = {0, 0, 0};
+float[] offset_lateral  = {0, 0, 0};
 float offset_scale      = 2;
 
 // for lerping
-float tgt_offset_rotation[] = {-PI, PI / 2, 0};
-float tgt_offset_lateral[]  = {0, 0, 0};
+float[] tgt_offset_rotation = {-PI, PI / 2, 0};
+float[] tgt_offset_lateral  = {0, 0, 0};
 float tgt_offset_scale      = 1;
 
 
@@ -146,6 +146,15 @@ public void checkKeyInput() {
         case 'f': tgt_offset_lateral[1] -= LATERAL_SPEED; break;
       }
     }
+
+    if (key == CODED) {
+      switch(keyCode) {
+        case UP   : T.moveTerrain(5, 0); break;
+        case DOWN : T.moveTerrain(-5, 0); break;
+        case LEFT : T.moveTerrain(0, 5); break;
+        case RIGHT: T.moveTerrain(0, -5); break;
+      }
+    }
   }
 }
 
@@ -238,6 +247,7 @@ public void drawWater(float water_level) {
 class Terrain {
   private int size;
   private float[] map;
+  private float[] offset_terrain = {0, 0};
 
   // constructor
   Terrain(int size) {
@@ -250,22 +260,24 @@ class Terrain {
 
   // Generates random terrain and saves to a map array
   public void generate() {
-    for (int y = 0; y < this.size; y++) {
+    for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
-        this.map[y * this.size + x] = T_AMP * noise((x + frameCount)* T_RES, y * T_RES);
+        this.map[z * this.size + x] = T_AMP * noise(
+          (x + offset_terrain[0]) * T_RES, (z + offset_terrain[1]) * T_RES
+        );
       }
     }
   }
 
-  // returns the height at specific x and y
-  private float get(int x, int y) {
-    if (x < 0 && y >= 0 && y < this.size)               return get(x + 1, y);
-    else if (x >= 0 && y < 0 && x < this.size)          return get(x, y + 1);
-    else if (y >= 0 && x >= this.size && y < this.size) return get(x - 1, y);
-    else if (x >= 0 && x < this.size && y >= this.size) return get(x, y - 1);
-    else if (x < 0 && y < 0)                            return get(0, 0);
-    else if (x >= this.size && y >= this.size)          return get(x - 1, y - 1);
-    else                                                return map[y * size + x];
+  // returns the height at specific x and z
+  private float get(int x, int z) {
+    if (x < 0 && z >= 0 && z < this.size)               return get(x + 1, z);
+    else if (x >= 0 && z < 0 && z < this.size)          return get(x, z + 1);
+    else if (z >= 0 && x >= this.size && z < this.size) return get(x - 1, z);
+    else if (x >= 0 && x < this.size && z >= this.size) return get(x, z - 1);
+    else if (x < 0 && z < 0)                            return get(0, 0);
+    else if (x >= this.size && z >= this.size)          return get(x - 1, z - 1);
+    else                                                return map[z * size + x];
   }
 
   private void fillColour(float level) {
@@ -284,40 +296,46 @@ class Terrain {
   }
 
   public void display() {
-    for (int y = 0; y < this.size; y++) {
+    for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
         // draw triangle and verticies
         // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x, y));
-        // vertex(x * T_SIZE,       this.get(x, y),     y * T_SIZE);
-        // fillColour(this.get(x+1, y));
-        // vertex((x + 1) * T_SIZE, this.get(x + 1, y), y * T_SIZE);
-        // fillColour(this.get(x, y+1));
-        // vertex(x * T_SIZE,       this.get(x, y + 1), (y + 1) * T_SIZE);
+        // fillColour(this.get(x, z));
+        // vertex(x * T_SIZE,       this.get(x, z),     z * T_SIZE);
+        // fillColour(this.get(x+1, z));
+        // vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
+        // fillColour(this.get(x, z+1));
+        // vertex(x * T_SIZE,       this.get(x, z + 1), (z + 1) * T_SIZE);
         // endShape(CLOSE);
         //
         // // second half of the triangle
         // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x+1, y));
-        // vertex((x + 1) * T_SIZE, get(x + 1, y),     y * T_SIZE);
-        // fillColour(this.get(x, y+1));
-        // vertex(x * T_SIZE,       get(x, y + 1),     (y + 1) * T_SIZE);
-        // fillColour(this.get(x+1, y+1));
-        // vertex((x + 1) * T_SIZE, get(x + 1, y + 1), (y + 1) * T_SIZE);
+        // fillColour(this.get(x+1, z));
+        // vertex((x + 1) * T_SIZE, get(x + 1, z),     z * T_SIZE);
+        // fillColour(this.get(x, z+1));
+        // vertex(x * T_SIZE,       get(x, z + 1),     (z + 1) * T_SIZE);
+        // fillColour(this.get(x+1, z+1));
+        // vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
         // endShape(CLOSE);
 
         beginShape(QUADS);
-        fillColour(this.get(x, y));
-        vertex(x * T_SIZE, this.get(x, y), y * T_SIZE);
-        fillColour(this.get(x+1, y));
-        vertex((x + 1) * T_SIZE, this.get(x + 1, y), y * T_SIZE);
-        fillColour(this.get(x+1, y+1));
-        vertex((x + 1) * T_SIZE, get(x + 1, y + 1), (y + 1) * T_SIZE);
-        fillColour(this.get(x, y+1));
-        vertex(x * T_SIZE, this.get(x, y + 1), (y + 1) * T_SIZE);
+        fillColour(this.get(x, z));
+        vertex(x * T_SIZE, this.get(x, z), z * T_SIZE);
+        fillColour(this.get(x + 1, z));
+        vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
+        fillColour(this.get(x + 1, z + 1));
+        vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
+        fillColour(this.get(x, z + 1));
+        vertex(x * T_SIZE, this.get(x, z + 1), (z + 1) * T_SIZE);
         endShape(CLOSE);
       }
     }
+  }
+
+  // moves the terrain by offsetting perlin noise
+  public void moveTerrain(float dx, float dz) {
+    offset_terrain[0] += dx;
+    offset_terrain[1] += dz;
   }
 }
   public void settings() {  size(800, 600, P3D); }
