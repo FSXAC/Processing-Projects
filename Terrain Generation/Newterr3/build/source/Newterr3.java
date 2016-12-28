@@ -22,14 +22,16 @@ float LERP_SPEED     = 0.1f;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1f;
 float SCALE_SPEED    = 0.03f;
-float SUN_SPEED      = 0.005f;
+float SUN_SPEED      = 0.000f;
 
 // TERRAIN
-int T_DIM       = 100;
+int T_DIM       = 200;
 float T_SIZE    = 5;
-float T_AMP     = 200;
+float T_AMP     = 160;
 float T_RES     = 0.03f;
 float T_THRES   = T_AMP * 0.4f;
+int   T_SEED    = 123;
+int   T_DETAIL  = 4;
 Terrain T       = new Terrain(T_DIM);
 int WATER_TOP = color(81, 215, 239, 200);
 int WATER_BTM = color(19, 52, 58, 200);
@@ -62,11 +64,8 @@ public void setup() {
   tgt_offset_lateral[2] = 0;
 
   // random seed
-  noiseSeed(123);
-  noiseDetail(3);
-
-  // initialize terrain
-  T.generate();
+  noiseSeed(T_SEED);
+  noiseDetail(T_DETAIL, 0.5f);
   noStroke();
 }
 
@@ -100,6 +99,8 @@ public void draw() {
     sin(frameCount * SUN_SPEED) * T_SIZE * T_DIM,
     cos(frameCount * SUN_SPEED) * 2 * T_AMP + 2 * T_AMP,
     cos(frameCount * SUN_SPEED) * T_SIZE * T_DIM);
+  float ambient = 30 + 150 * cos(frameCount * SUN_SPEED);
+  ambientLight(ambient, ambient, ambient);
 
   // drawing standard unit axis
   // drawAxis();
@@ -112,6 +113,10 @@ public void draw() {
   T.generate();
   T.display();
   popMatrix();
+
+  // draw other objects
+  // placeSphere(0, 50, 0, 50);
+  // drawCylinder(50, 200, 3);
 
   // draw water
   drawWater(0.95f * T_THRES);
@@ -149,8 +154,8 @@ public void checkKeyInput() {
 
     if (key == CODED) {
       switch(keyCode) {
-        case UP   : T.moveTerrain(5, 0); break;
-        case DOWN : T.moveTerrain(-5, 0); break;
+        case UP   : T.moveTerrain(-5, 0); break;
+        case DOWN : T.moveTerrain(5, 0); break;
         case LEFT : T.moveTerrain(0, 5); break;
         case RIGHT: T.moveTerrain(0, -5); break;
       }
@@ -189,11 +194,29 @@ public void drawAxis() {
 }
 
 // place a sphere on the surface where y = 0
-public void placeSphere(float x, float z, float radius) {
+public void placeSphere(float x, float y, float z, float radius) {
   pushMatrix();
-  translate(x, radius, z);
+  translate(x, y, z);
   sphere(radius);
   popMatrix();
+}
+
+// draws a cylinder
+public void drawCylinder(float radius, float height, int faces) {
+  beginShape(QUADS);
+  float d = 2 * PI / faces;
+  float a_x, a_z, b_x, b_z;
+  for (int i = 0; i < faces; i++) {
+    a_x = radius * cos(i * d);
+    a_z = radius * sin(i * d);
+    b_x = radius * cos((i + 1) * d);
+    b_z = radius * sin((i + 1) * d);
+    vertex(a_x, height, a_z);
+    vertex(b_x, height, b_z);
+    vertex(b_x, 0, b_z);
+    vertex(a_x, 0, a_z);
+  }
+  endShape(CLOSE);
 }
 
 // draws water that has transluscent gradient
@@ -247,7 +270,7 @@ public void drawWater(float water_level) {
 class Terrain {
   private int size;
   private float[] map;
-  private float[] offset_terrain = {0, 0};
+  private float[] offset_terrain = {30000, 30000};
 
   // constructor
   Terrain(int size) {
@@ -288,46 +311,42 @@ class Terrain {
         color(224, 219, 197),
         map(level, T_THRES / 2, T_THRES, 0, 1)
       ));
-    else fill(lerpColor(
-        color(11, 56, 8),
-        color(255, 255, 255),
+    else if (level < T_AMP * 0.7f) {
+      // land
+      fill(lerpColor(
+        color(54, 84, 31),
+        color(198, 204, 142),
         map(level, T_THRES, T_AMP, 0, 1)
       ));
+    }
+    else fill(255, 255, 255);
   }
 
+  Tree tree = new Tree();
   public void display() {
+    float o, a1, a2, d;
     for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
-        // draw triangle and verticies
-        // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x, z));
-        // vertex(x * T_SIZE,       this.get(x, z),     z * T_SIZE);
-        // fillColour(this.get(x+1, z));
-        // vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
-        // fillColour(this.get(x, z+1));
-        // vertex(x * T_SIZE,       this.get(x, z + 1), (z + 1) * T_SIZE);
-        // endShape(CLOSE);
-        //
-        // // second half of the triangle
-        // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x+1, z));
-        // vertex((x + 1) * T_SIZE, get(x + 1, z),     z * T_SIZE);
-        // fillColour(this.get(x, z+1));
-        // vertex(x * T_SIZE,       get(x, z + 1),     (z + 1) * T_SIZE);
-        // fillColour(this.get(x+1, z+1));
-        // vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
-        // endShape(CLOSE);
+        o  = this.get(x, z);
+        a1 = this.get(x + 1, z);
+        a2 = this.get(x, z + 1);
+        d  = this.get(x + 1, z + 1);
 
         beginShape(QUADS);
-        fillColour(this.get(x, z));
-        vertex(x * T_SIZE, this.get(x, z), z * T_SIZE);
-        fillColour(this.get(x + 1, z));
-        vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
-        fillColour(this.get(x + 1, z + 1));
-        vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
-        fillColour(this.get(x, z + 1));
-        vertex(x * T_SIZE, this.get(x, z + 1), (z + 1) * T_SIZE);
+        fillColour(o);
+        vertex(x * T_SIZE, o, z * T_SIZE);
+        fillColour(a1);
+        vertex((x + 1) * T_SIZE, a1, z * T_SIZE);
+        fillColour(d);
+        vertex((x + 1) * T_SIZE, d, (z + 1) * T_SIZE);
+        fillColour(a2);
+        vertex(x * T_SIZE, a2, (z + 1) * T_SIZE);
         endShape(CLOSE);
+
+        // draw tree
+        if (o > T_THRES && o < T_AMP * 0.7f && random(100) < 2) {
+          tree.drawTree(x * T_SIZE, o, z * T_SIZE);
+        }
       }
     }
   }
@@ -336,6 +355,29 @@ class Terrain {
   public void moveTerrain(float dx, float dz) {
     offset_terrain[0] += dx;
     offset_terrain[1] += dz;
+  }
+}
+// basic spherical tree
+class Tree {
+  private float height;
+  private float radius;
+
+  // constructor
+  Tree() {
+    height = random(20) + 5;
+    radius = random(height / 2) + height / 4;
+  }
+
+  // draw the tree
+  public void drawTree(float x, float y, float z) {
+    pushMatrix();
+    translate(x, y, z);
+    fill(45, 34, 15);
+    drawCylinder(1, 6, 3);
+    translate(0, 6, 0);
+    fill(69, 158, 18);
+    sphere(3);
+    popMatrix();
   }
 }
   public void settings() {  size(800, 600, P3D); }

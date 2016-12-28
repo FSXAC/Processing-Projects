@@ -6,14 +6,16 @@ float LERP_SPEED     = 0.1;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1;
 float SCALE_SPEED    = 0.03;
-float SUN_SPEED      = 0.005;
+float SUN_SPEED      = 0.000;
 
 // TERRAIN
-int T_DIM       = 100;
+int T_DIM       = 200;
 float T_SIZE    = 5;
-float T_AMP     = 200;
+float T_AMP     = 160;
 float T_RES     = 0.03;
 float T_THRES   = T_AMP * 0.4;
+int   T_SEED    = 123;
+int   T_DETAIL  = 4;
 Terrain T       = new Terrain(T_DIM);
 color WATER_TOP = color(81, 215, 239, 200);
 color WATER_BTM = color(19, 52, 58, 200);
@@ -46,11 +48,8 @@ void setup() {
   tgt_offset_lateral[2] = 0;
 
   // random seed
-  noiseSeed(123);
-  noiseDetail(3);
-
-  // initialize terrain
-  T.generate();
+  noiseSeed(T_SEED);
+  noiseDetail(T_DETAIL, 0.5);
   noStroke();
 }
 
@@ -84,6 +83,8 @@ void draw() {
     sin(frameCount * SUN_SPEED) * T_SIZE * T_DIM,
     cos(frameCount * SUN_SPEED) * 2 * T_AMP + 2 * T_AMP,
     cos(frameCount * SUN_SPEED) * T_SIZE * T_DIM);
+  float ambient = 30 + 150 * cos(frameCount * SUN_SPEED);
+  ambientLight(ambient, ambient, ambient);
 
   // drawing standard unit axis
   // drawAxis();
@@ -96,6 +97,10 @@ void draw() {
   T.generate();
   T.display();
   popMatrix();
+
+  // draw other objects
+  // placeSphere(0, 50, 0, 50);
+  // drawCylinder(50, 200, 3);
 
   // draw water
   drawWater(0.95 * T_THRES);
@@ -133,8 +138,8 @@ void checkKeyInput() {
 
     if (key == CODED) {
       switch(keyCode) {
-        case UP   : T.moveTerrain(5, 0); break;
-        case DOWN : T.moveTerrain(-5, 0); break;
+        case UP   : T.moveTerrain(-5, 0); break;
+        case DOWN : T.moveTerrain(5, 0); break;
         case LEFT : T.moveTerrain(0, 5); break;
         case RIGHT: T.moveTerrain(0, -5); break;
       }
@@ -173,11 +178,29 @@ void drawAxis() {
 }
 
 // place a sphere on the surface where y = 0
-void placeSphere(float x, float z, float radius) {
+void placeSphere(float x, float y, float z, float radius) {
   pushMatrix();
-  translate(x, radius, z);
+  translate(x, y, z);
   sphere(radius);
   popMatrix();
+}
+
+// draws a cylinder
+void drawCylinder(float radius, float height, int faces) {
+  beginShape(QUADS);
+  float d = 2 * PI / faces;
+  float a_x, a_z, b_x, b_z;
+  for (int i = 0; i < faces; i++) {
+    a_x = radius * cos(i * d);
+    a_z = radius * sin(i * d);
+    b_x = radius * cos((i + 1) * d);
+    b_z = radius * sin((i + 1) * d);
+    vertex(a_x, height, a_z);
+    vertex(b_x, height, b_z);
+    vertex(b_x, 0, b_z);
+    vertex(a_x, 0, a_z);
+  }
+  endShape(CLOSE);
 }
 
 // draws water that has transluscent gradient

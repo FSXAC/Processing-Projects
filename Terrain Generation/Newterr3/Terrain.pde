@@ -1,7 +1,7 @@
 class Terrain {
   private int size;
   private float[] map;
-  private float[] offset_terrain = {0, 0};
+  private float[] offset_terrain = {30000, 30000};
 
   // constructor
   Terrain(int size) {
@@ -42,46 +42,42 @@ class Terrain {
         color(224, 219, 197),
         map(level, T_THRES / 2, T_THRES, 0, 1)
       ));
-    else fill(lerpColor(
-        color(11, 56, 8),
-        color(255, 255, 255),
+    else if (level < T_AMP * 0.7) {
+      // land
+      fill(lerpColor(
+        color(54, 84, 31),
+        color(198, 204, 142),
         map(level, T_THRES, T_AMP, 0, 1)
       ));
+    }
+    else fill(255, 255, 255);
   }
 
+  Tree tree = new Tree();
   public void display() {
+    float o, a1, a2, d;
     for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
-        // draw triangle and verticies
-        // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x, z));
-        // vertex(x * T_SIZE,       this.get(x, z),     z * T_SIZE);
-        // fillColour(this.get(x+1, z));
-        // vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
-        // fillColour(this.get(x, z+1));
-        // vertex(x * T_SIZE,       this.get(x, z + 1), (z + 1) * T_SIZE);
-        // endShape(CLOSE);
-        //
-        // // second half of the triangle
-        // beginShape(TRIANGLE_FAN);
-        // fillColour(this.get(x+1, z));
-        // vertex((x + 1) * T_SIZE, get(x + 1, z),     z * T_SIZE);
-        // fillColour(this.get(x, z+1));
-        // vertex(x * T_SIZE,       get(x, z + 1),     (z + 1) * T_SIZE);
-        // fillColour(this.get(x+1, z+1));
-        // vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
-        // endShape(CLOSE);
+        o  = this.get(x, z);
+        a1 = this.get(x + 1, z);
+        a2 = this.get(x, z + 1);
+        d  = this.get(x + 1, z + 1);
 
         beginShape(QUADS);
-        fillColour(this.get(x, z));
-        vertex(x * T_SIZE, this.get(x, z), z * T_SIZE);
-        fillColour(this.get(x + 1, z));
-        vertex((x + 1) * T_SIZE, this.get(x + 1, z), z * T_SIZE);
-        fillColour(this.get(x + 1, z + 1));
-        vertex((x + 1) * T_SIZE, get(x + 1, z + 1), (z + 1) * T_SIZE);
-        fillColour(this.get(x, z + 1));
-        vertex(x * T_SIZE, this.get(x, z + 1), (z + 1) * T_SIZE);
+        fillColour(o);
+        vertex(x * T_SIZE, o, z * T_SIZE);
+        fillColour(a1);
+        vertex((x + 1) * T_SIZE, a1, z * T_SIZE);
+        fillColour(d);
+        vertex((x + 1) * T_SIZE, d, (z + 1) * T_SIZE);
+        fillColour(a2);
+        vertex(x * T_SIZE, a2, (z + 1) * T_SIZE);
         endShape(CLOSE);
+
+        // draw tree
+        if (o > T_THRES && o < T_AMP * 0.7 && random(100) < 2) {
+          tree.drawTree(x * T_SIZE, o, z * T_SIZE);
+        }
       }
     }
   }
