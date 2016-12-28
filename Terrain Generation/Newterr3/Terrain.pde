@@ -37,7 +37,7 @@ class Terrain {
       fill(lerpColor(
         color(58, 42, 14),
         color(224, 219, 197),
-        map(level, 0, T_THRES, 0, 1))
+        map(level, T_THRES / 2, T_THRES, 0, 1))
       );
     else fill(255);
   }

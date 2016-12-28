@@ -22,6 +22,7 @@ float LERP_SPEED     = 0.1f;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1f;
 float SCALE_SPEED    = 0.03f;
+float SUN_SPEED      = 0.005f;
 
 // TERRAIN
 int T_DIM     = 100;
@@ -58,8 +59,13 @@ public void setup() {
   tgt_offset_lateral[1] = height / 2;
   tgt_offset_lateral[2] = 0;
 
+  // random seed
+  noiseSeed(123);
+  noiseDetail(3);
+
   // initialize terrain
   T.generate();
+  noStroke();
 }
 
 // Main draw loop function
@@ -87,25 +93,14 @@ public void draw() {
   // LIGHTING
   pointLight(
     255,
-    220 + 35 * cos(frameCount * 0.01f), 
-    155 + 100 * cos(frameCount * 0.01f),
-    sin(frameCount * 0.01f) * T_SIZE * T_DIM,
-    cos(frameCount * 0.01f) * 2 * T_AMP + 2 * T_AMP,
-    cos(frameCount * 0.01f) * T_SIZE * T_DIM);
+    220 + 35 * cos(frameCount * SUN_SPEED),
+    155 + 100 * cos(frameCount * SUN_SPEED),
+    sin(frameCount * SUN_SPEED) * T_SIZE * T_DIM,
+    cos(frameCount * SUN_SPEED) * 2 * T_AMP + 2 * T_AMP,
+    cos(frameCount * SUN_SPEED) * T_SIZE * T_DIM);
 
   // drawing standard unit axis
-  // noFill();
-  fill(255);
-  drawAxis();
-
-  noStroke();
-  // pushMatrix();
-  // translate(0, -10, 0);
-  // box(200, 20, 200);
-  // popMatrix();
-  // placeSphere(0, 0, 30);
-  // placeSphere(20, 20, 10);
-  // placeSphere(-110, 25, 100);
+  // drawAxis();
 
   // display test terrain
   pushMatrix();
@@ -117,9 +112,22 @@ public void draw() {
 
   // draw water
   pushMatrix();
-  fill(119, 223, 255, 200);
-  translate(0, T_THRES / 2, 0);
-  box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
+  fill(59, 170, 175, 100);
+  translate(0, 5 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 5 * T_THRES / 6, T_SIZE * T_DIM);
+
+  translate(0, 4 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM * 0.99f, 4 * T_THRES / 6, T_SIZE * T_DIM * 0.99f);
+
+  translate(0, 3 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM * 0.98f, 3 * T_THRES / 6, T_SIZE * T_DIM * 0.98f);
+
+  translate(0, 2 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM * 0.97f, 2 * T_THRES / 6, T_SIZE * T_DIM * 0.97f);
+
+  translate(0, 1 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM * 0.96f, 1 * T_THRES / 6, T_SIZE * T_DIM * 0.96f);
+
   popMatrix();
 
   // key hold events
@@ -231,7 +239,7 @@ class Terrain {
       fill(lerpColor(
         color(58, 42, 14),
         color(224, 219, 197),
-        map(level, 0, T_THRES, 0, 1))
+        map(level, T_THRES / 2, T_THRES, 0, 1))
       );
     else fill(255);
   }

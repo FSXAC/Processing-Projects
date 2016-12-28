@@ -6,6 +6,7 @@ float LERP_SPEED     = 0.1;
 float LATERAL_SPEED  = 10;
 float ROTATION_SPEED = 0.1;
 float SCALE_SPEED    = 0.03;
+float SUN_SPEED      = 0.005;
 
 // TERRAIN
 int T_DIM     = 100;
@@ -42,8 +43,13 @@ void setup() {
   tgt_offset_lateral[1] = height / 2;
   tgt_offset_lateral[2] = 0;
 
+  // random seed
+  noiseSeed(123);
+  noiseDetail(3);
+
   // initialize terrain
   T.generate();
+  noStroke();
 }
 
 // Main draw loop function
@@ -71,25 +77,14 @@ void draw() {
   // LIGHTING
   pointLight(
     255,
-    220 + 35 * cos(frameCount * 0.01), 
-    155 + 100 * cos(frameCount * 0.01),
-    sin(frameCount * 0.01) * T_SIZE * T_DIM,
-    cos(frameCount * 0.01) * 2 * T_AMP + 2 * T_AMP,
-    cos(frameCount * 0.01) * T_SIZE * T_DIM);
+    220 + 35 * cos(frameCount * SUN_SPEED),
+    155 + 100 * cos(frameCount * SUN_SPEED),
+    sin(frameCount * SUN_SPEED) * T_SIZE * T_DIM,
+    cos(frameCount * SUN_SPEED) * 2 * T_AMP + 2 * T_AMP,
+    cos(frameCount * SUN_SPEED) * T_SIZE * T_DIM);
 
   // drawing standard unit axis
-  // noFill();
-  fill(255);
-  drawAxis();
-
-  noStroke();
-  // pushMatrix();
-  // translate(0, -10, 0);
-  // box(200, 20, 200);
-  // popMatrix();
-  // placeSphere(0, 0, 30);
-  // placeSphere(20, 20, 10);
-  // placeSphere(-110, 25, 100);
+  // drawAxis();
 
   // display test terrain
   pushMatrix();
@@ -101,9 +96,22 @@ void draw() {
 
   // draw water
   pushMatrix();
-  fill(119, 223, 255, 200);
-  translate(0, T_THRES / 2, 0);
-  box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
+  fill(59, 170, 175, 100);
+  translate(0, 5 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 5 * T_THRES / 6, T_SIZE * T_DIM);
+
+  translate(0, 4 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 4 * T_THRES / 6, T_SIZE * T_DIM);
+
+  translate(0, 3 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 3 * T_THRES / 6, T_SIZE * T_DIM);
+
+  translate(0, 2 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 2 * T_THRES / 6, T_SIZE * T_DIM);
+
+  translate(0, 1 * T_THRES / 12, 0);
+  box(T_SIZE * T_DIM, 1 * T_THRES / 6, T_SIZE * T_DIM);
+
   popMatrix();
 
   // key hold events
@@ -176,3 +184,5 @@ void placeSphere(float x, float z, float radius) {
   sphere(radius);
   popMatrix();
 }
+
+// draws water that has transluscent gradient
