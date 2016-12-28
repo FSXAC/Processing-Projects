@@ -4,7 +4,7 @@ float newXmag, newYmag = 0;
 
 void setup() {
   size(900, 500, P3D);
-  terrain = new Terrain(8);
+  terrain = new Terrain(9);
 
   // initialize
   terrain.generate(0.1);
