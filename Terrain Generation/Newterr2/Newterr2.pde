@@ -122,7 +122,6 @@ class Terrain {
     // stop
     if (half < 1) return;
 
-
     for (y = half; y < max; y += size) {
       for (x = half; x < max; x += size) {
         square(x, y, half, random(-scale, scale));
