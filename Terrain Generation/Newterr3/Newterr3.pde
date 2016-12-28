@@ -3,6 +3,12 @@
 // GLOBAL VARIABLES
 Terrain T = new Terrain(10);
 
+// GRAPHICS
+float LERP_SPEED     = 0.1;
+float LATERAL_SPEED  = 10;
+float ROTATION_SPEED = 0.1;
+float SCALE_SPEED    = 0.03;
+
 // MODE
 // 1 - lateral movement
 // 2 - rotational movement
@@ -10,9 +16,15 @@ int camera_mode = 1;
 
 // VIEW OFFSET
 // float offset_rotation[] = {-PI / 2, PI, -PI / 2};
-float offset_rotation[] = {-PI, PI / 2, 0};
-float offset_lateral[] = {0, 0, 0};
-float offset_scale = 1;
+float offset_rotation[] = {0, 0, 0};
+float offset_lateral[]  = {0, 0, 0};
+float offset_scale      = 2;
+
+// for lerping
+float tgt_offset_rotation[] = {-PI, PI / 2, 0};
+float tgt_offset_lateral[]  = {0, 0, 0};
+float tgt_offset_scale      = 1;
+
 
 // Setup function
 void setup() {
@@ -20,9 +32,9 @@ void setup() {
   size(800, 600, P3D);
 
   // configure lateral offset
-  offset_lateral[0] = width / 2;
-  offset_lateral[1] = height / 2;
-  offset_lateral[2] = 0;
+  tgt_offset_lateral[0] = width / 2;
+  tgt_offset_lateral[1] = height / 2;
+  tgt_offset_lateral[2] = 0;
 
   // initialize terrain
   T.generate();
@@ -72,25 +84,43 @@ void draw() {
   placeSphere(-110, 25, 100);
 
   // key hold events
+  checkKeyInput();
+
+  // updating lerp animations
+  lerpUpdateCamera();
+}
+
+// check for using command inputs and execute
+void checkKeyInput() {
   if (keyPressed) {
     if (camera_mode == 1) {
       switch(key) {
-        case 'w': offset_rotation[0] -= 0.1; break;
-        case 's': offset_rotation[0] += 0.1; break;
-        case 'a': offset_rotation[1] -= 0.1; break;
-        case 'd': offset_rotation[1] += 0.1; break;
-        case 'r': offset_scale       *= 1.03; break;
-        case 'f': offset_scale       *= 0.97; break;
+        case 'w': tgt_offset_rotation[0] -= ROTATION_SPEED; break;
+        case 's': tgt_offset_rotation[0] += ROTATION_SPEED; break;
+        case 'a': tgt_offset_rotation[1] -= ROTATION_SPEED; break;
+        case 'd': tgt_offset_rotation[1] += ROTATION_SPEED; break;
+        case 'r': tgt_offset_scale       *= 1 + SCALE_SPEED; break;
+        case 'f': tgt_offset_scale       *= 1 - SCALE_SPEED; break;
       }
+
     } else if (camera_mode == 2) {
       switch(key) {
-        case 'w': offset_lateral[2] += 3; break;
-        case 's': offset_lateral[2] -= 3; break;
-        case 'a': offset_lateral[0] += 3; break;
-        case 'd': offset_lateral[0] -= 3; break;
+        case 'w': tgt_offset_lateral[2] += LATERAL_SPEED; break;
+        case 's': tgt_offset_lateral[2] -= LATERAL_SPEED; break;
+        case 'a': tgt_offset_lateral[0] += LATERAL_SPEED; break;
+        case 'd': tgt_offset_lateral[0] -= LATERAL_SPEED; break;
       }
     }
   }
+}
+
+// updating current camera to lerp to target camera
+void lerpUpdateCamera() {
+  for (int i = 0; i < 3; i++) {
+    offset_lateral[i]  = lerp(offset_lateral[i], tgt_offset_lateral[i], LERP_SPEED);
+    offset_rotation[i] = lerp(offset_rotation[i], tgt_offset_rotation[i], LERP_SPEED);
+  }
+  offset_scale = lerp(offset_scale, tgt_offset_scale, LERP_SPEED);
 }
 
 // keyboard events
@@ -103,6 +133,7 @@ void keyPressed() {
   }
 }
 
+// PLACING OBJECTS INTO ENVIRONMENT FUNCTIONS
 // Draws the unit vectors
 void drawAxis() {
   stroke(255, 0, 0);
