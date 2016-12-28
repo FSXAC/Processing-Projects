@@ -8,11 +8,12 @@ float ROTATION_SPEED = 0.1;
 float SCALE_SPEED    = 0.03;
 
 // TERRAIN
-int T_DIM    = 100;
-float T_SIZE = 5;
-float T_AMP  = 200;
-float T_RES  = 0.05;
-Terrain T    = new Terrain(T_DIM);
+int T_DIM     = 100;
+float T_SIZE  = 5;
+float T_AMP   = 200;
+float T_RES   = 0.03;
+float T_THRES = T_AMP * 0.4;
+Terrain T     = new Terrain(T_DIM);
 
 // MODE
 // 1 - lateral movement
@@ -69,7 +70,9 @@ void draw() {
 
   // LIGHTING
   pointLight(
-    255, 255, 255,
+    255,
+    220 + 35 * cos(frameCount * 0.01), 
+    155 + 100 * cos(frameCount * 0.01),
     sin(frameCount * 0.01) * T_SIZE * T_DIM,
     cos(frameCount * 0.01) * 2 * T_AMP + 2 * T_AMP,
     cos(frameCount * 0.01) * T_SIZE * T_DIM);
@@ -91,7 +94,16 @@ void draw() {
   // display test terrain
   pushMatrix();
   translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
+
+  // draw main terrain
   T.display();
+  popMatrix();
+
+  // draw water
+  pushMatrix();
+  fill(119, 223, 255, 200);
+  translate(0, T_THRES / 2, 0);
+  box(T_SIZE * T_DIM, T_THRES, T_SIZE * T_DIM);
   popMatrix();
 
   // key hold events
