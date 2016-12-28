@@ -9,7 +9,8 @@ Terrain T = new Terrain(10);
 int camera_mode = 1;
 
 // VIEW OFFSET
-float offset_rotation[] = {-PI / 2, PI, -PI / 2};
+// float offset_rotation[] = {-PI / 2, PI, -PI / 2};
+float offset_rotation[] = {-PI, PI / 2, 0};
 float offset_lateral[]  = {width / 2, height / 2, 0};
 float offset_scale = 1;
 
@@ -17,10 +18,6 @@ float offset_scale = 1;
 void setup() {
   // display settings
   size(800, 600, P3D);
-  noSmooth();
-
-  // light
-  // directionalLight(204, 204, 204, 0, 0, -1);
 
   // initialize terrain
   T.generate();
@@ -28,7 +25,11 @@ void setup() {
 
 // Main draw loop function
 void draw() {
+  // background
   background(10, 15, 50);
+
+  // CAMERA
+  // ortho();
 
   // view controls
   // lateral
@@ -45,39 +46,42 @@ void draw() {
   // scale
   scale(offset_scale);
 
+  // LIGHTING
+  pointLight(
+    255, 255, 255,
+    sin(frameCount * 0.01) * 80,
+    sin(frameCount * 0.01) * 50 + 50,
+    cos(frameCount * 0.01) * 200);
+
+  // drawing standard unit axis
+  // noFill();
+  fill(255);
+  drawAxis();
+
+  noStroke();
+  pushMatrix();
+  translate(0, -5, 0);
+  box(100, 10, 100);
+  popMatrix();
+  placeSphere(0, 0, 10);
+
   // key hold events
   if (keyPressed) {
     if (camera_mode == 1) {
       switch(key) {
         case 'w': offset_rotation[0] -= 0.1; break;
         case 's': offset_rotation[0] += 0.1; break;
-        case 'a': offset_rotation[2] -= 0.1; break;
-        case 'd': offset_rotation[2] += 0.1; break;
-        case 'r': offset_scale       *= 1.01; break;
-        case 'f': offset_scale       *= 0.99; break;
+        case 'a': offset_rotation[1] -= 0.1; break;
+        case 'd': offset_rotation[1] += 0.1; break;
+        case 'r': offset_scale       *= 1.03; break;
+        case 'f': offset_scale       *= 0.97; break;
       }
     } else if (camera_mode == 2) {
-      // switch(key) {
-      //   case 'w':
-      // }
+      switch(key) {
+        // case 'w': offset_lateral[0] +=
+      }
     }
   }
-
-  // drawing standard unit axis
-  noFill();
-  drawAxis();
-  pushMatrix();
-  translate(0, 0, -5);
-  box(500, 500, 10);
-  popMatrix();
-  pushMatrix();
-  translate(0, 0, 50);
-  box(50, 20, 100);
-  popMatrix();
-  pushMatrix();
-  translate(0,0,120);
-  sphere(20);
-  popMatrix();
 }
 
 // keyboard events
@@ -98,5 +102,12 @@ void drawAxis() {
   line(0, 0, 0, 0, 100, 0);
   stroke(0, 0, 255);
   line(0, 0, 0, 0, 0, 100);
-  stroke(255);
+}
+
+// place a sphere on the surface where y = 0
+void placeSphere(float x, float z, float radius) {
+  pushMatrix();
+  translate(x, radius, z);
+  sphere(radius);
+  popMatrix();
 }

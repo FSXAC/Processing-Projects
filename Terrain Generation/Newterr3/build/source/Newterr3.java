@@ -25,7 +25,8 @@ Terrain T = new Terrain(10);
 int camera_mode = 1;
 
 // VIEW OFFSET
-float offset_rotation[] = {-PI / 2, PI, -PI / 2};
+// float offset_rotation[] = {-PI / 2, PI, -PI / 2};
+float offset_rotation[] = {-PI, PI / 2, 0};
 float offset_lateral[]  = {width / 2, height / 2, 0};
 float offset_scale = 1;
 
@@ -33,10 +34,6 @@ float offset_scale = 1;
 public void setup() {
   // display settings
   
-  
-
-  // light
-  // directionalLight(204, 204, 204, 0, 0, -1);
 
   // initialize terrain
   T.generate();
@@ -44,7 +41,11 @@ public void setup() {
 
 // Main draw loop function
 public void draw() {
+  // background
   background(10, 15, 50);
+
+  // CAMERA
+  // ortho();
 
   // view controls
   // lateral
@@ -61,39 +62,38 @@ public void draw() {
   // scale
   scale(offset_scale);
 
+  // LIGHTING
+  pointLight(255, 255, 255, sin(frameCount * 0.01f) * 80, sin(frameCount * 0.01f) * 50 + 50, cos(frameCount * 0.01f) * 200);
+
+  // drawing standard unit axis
+  // noFill();
+  fill(255);
+  drawAxis();
+
+  noStroke();
+  pushMatrix();
+  translate(0, -5, 0);
+  box(100, 10, 100);
+  popMatrix();
+  placeSphere(0, 0, 10);
+
   // key hold events
   if (keyPressed) {
     if (camera_mode == 1) {
       switch(key) {
         case 'w': offset_rotation[0] -= 0.1f; break;
         case 's': offset_rotation[0] += 0.1f; break;
-        case 'a': offset_rotation[2] -= 0.1f; break;
-        case 'd': offset_rotation[2] += 0.1f; break;
-        case 'r': offset_scale       *= 1.01f; break;
-        case 'f': offset_scale       *= 0.99f; break;
+        case 'a': offset_rotation[1] -= 0.1f; break;
+        case 'd': offset_rotation[1] += 0.1f; break;
+        case 'r': offset_scale       *= 1.03f; break;
+        case 'f': offset_scale       *= 0.97f; break;
       }
     } else if (camera_mode == 2) {
-      // switch(key) {
-      //   case 'w':
-      // }
+      switch(key) {
+        // case 'w': offset_lateral[0] +=
+      }
     }
   }
-
-  // drawing standard unit axis
-  noFill();
-  drawAxis();
-  pushMatrix();
-  translate(0, 0, -5);
-  box(500, 500, 10);
-  popMatrix();
-  pushMatrix();
-  translate(0, 0, 50);
-  box(50, 20, 100);
-  popMatrix();
-  pushMatrix();
-  translate(0,0,120);
-  sphere(20);
-  popMatrix();
 }
 
 // keyboard events
@@ -114,7 +114,14 @@ public void drawAxis() {
   line(0, 0, 0, 0, 100, 0);
   stroke(0, 0, 255);
   line(0, 0, 0, 0, 0, 100);
-  stroke(255);
+}
+
+// place a sphere on the surface where y = 0
+public void placeSphere(float x, float z, float radius) {
+  pushMatrix();
+  translate(x, radius, z);
+  sphere(radius);
+  popMatrix();
 }
 class Terrain {
   private int size;
@@ -164,7 +171,7 @@ class Terrain {
     }
   }
 }
-  public void settings() {  size(800, 600, P3D);  noSmooth(); }
+  public void settings() {  size(800, 600, P3D); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Newterr3" };
     if (passedArgs != null) {
