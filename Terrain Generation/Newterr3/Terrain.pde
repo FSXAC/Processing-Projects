@@ -1,7 +1,7 @@
 class Terrain {
   private int size;
   private float[] map;
-  private float[] offset_terrain = {30000, 30000};
+  private Forest forest = new Forest();
 
   // constructor
   Terrain(int size) {
@@ -14,6 +14,7 @@ class Terrain {
 
   // Generates random terrain and saves to a map array
   public void generate() {
+    // generate terrain mesh
     for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
         this.map[z * this.size + x] = T_AMP * noise(
@@ -21,6 +22,9 @@ class Terrain {
         );
       }
     }
+
+    // generate forest
+    this.forest.generate();
   }
 
   // returns the height at specific x and z
@@ -74,6 +78,9 @@ class Terrain {
         endShape(CLOSE);
       }
     }
+
+    // draw forest
+    this.forest.drawForest(this.map);
   }
 
   // moves the terrain by offsetting perlin noise

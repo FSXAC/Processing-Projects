@@ -9,14 +9,13 @@ float SCALE_SPEED    = 0.03;
 float SUN_SPEED      = 0.000;
 
 // TERRAIN
-int T_DIM       = 200;
-float T_SIZE    = 5;
-float T_AMP     = 160;
-float T_RES     = 0.03;
-float T_THRES   = T_AMP * 0.4;
-int   T_SEED    = 123;
-int   T_DETAIL  = 4;
-Terrain T       = new Terrain(T_DIM);
+int T_DIM      = 200;
+float T_SIZE   = 5;
+float T_AMP    = 160;
+float T_RES    = 0.03;
+float T_THRES  = T_AMP * 0.4;
+int   T_SEED   = 123;
+int   T_DETAIL = 4;
 
 // WATER
 color WATER_TOP = color(81, 215, 239, 200);
@@ -41,6 +40,10 @@ float[] tgt_offset_rotation = {-PI, PI / 2, 0};
 float[] tgt_offset_lateral  = {0, 0, 0};
 float tgt_offset_scale      = 1;
 
+// terrain generation offset
+float[] offset_terrain = {30000, 30000};
+
+Terrain T = new Terrain(T_DIM);
 
 // Setup function
 void setup() {

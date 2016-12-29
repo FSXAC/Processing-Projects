@@ -25,16 +25,20 @@ float SCALE_SPEED    = 0.03f;
 float SUN_SPEED      = 0.000f;
 
 // TERRAIN
-int T_DIM       = 200;
-float T_SIZE    = 5;
-float T_AMP     = 160;
-float T_RES     = 0.03f;
-float T_THRES   = T_AMP * 0.4f;
-int   T_SEED    = 123;
-int   T_DETAIL  = 4;
-Terrain T       = new Terrain(T_DIM);
+int T_DIM      = 200;
+float T_SIZE   = 5;
+float T_AMP    = 160;
+float T_RES    = 0.03f;
+float T_THRES  = T_AMP * 0.4f;
+int   T_SEED   = 123;
+int   T_DETAIL = 4;
+
+// WATER
 int WATER_TOP = color(81, 215, 239, 200);
 int WATER_BTM = color(19, 52, 58, 200);
+
+// TREES
+float TREE_RES = 0.01f;
 
 // MODE
 // 1 - lateral movement
@@ -52,6 +56,10 @@ float[] tgt_offset_rotation = {-PI, PI / 2, 0};
 float[] tgt_offset_lateral  = {0, 0, 0};
 float tgt_offset_scale      = 1;
 
+// terrain generation offset
+float[] offset_terrain = {30000, 30000};
+
+Terrain T = new Terrain(T_DIM);
 
 // Setup function
 public void setup() {
@@ -275,7 +283,7 @@ public void drawWater(float water_level) {
 class Terrain {
   private int size;
   private float[] map;
-  private float[] offset_terrain = {30000, 30000};
+  private Forest forest = new Forest();
 
   // constructor
   Terrain(int size) {
@@ -288,6 +296,7 @@ class Terrain {
 
   // Generates random terrain and saves to a map array
   public void generate() {
+    // generate terrain mesh
     for (int z = 0; z < this.size; z++) {
       for (int x = 0; x < this.size; x++) {
         this.map[z * this.size + x] = T_AMP * noise(
@@ -295,6 +304,9 @@ class Terrain {
         );
       }
     }
+
+    // generate forest
+    this.forest.generate();
   }
 
   // returns the height at specific x and z
@@ -305,7 +317,7 @@ class Terrain {
     else if (x >= 0 && x < this.size && z >= this.size) return get(x, z - 1);
     else if (x < 0 && z < 0)                            return get(0, 0);
     else if (x >= this.size && z >= this.size)          return get(x - 1, z - 1);
-    else                                                return map[z * size + x];
+    else                                                return map[z * this.size + x];
   }
 
   private void fillColour(float level) {
@@ -348,6 +360,9 @@ class Terrain {
         endShape(CLOSE);
       }
     }
+
+    // draw forest
+    this.forest.drawForest(this.map);
   }
 
   // moves the terrain by offsetting perlin noise
@@ -360,11 +375,14 @@ class Terrain {
 class Tree {
   private float height;
   private float radius;
+  private boolean enabled;
 
   // constructor
   Tree() {
-    height = random(20) + 5;
-    radius = random(height / 2) + height / 4;
+    // height = random(8) + 5;
+    // radius = random(height / 2) + height / 4;
+    height = 10;
+    radius = 3;
   }
 
   // draw the tree
@@ -372,16 +390,52 @@ class Tree {
     pushMatrix();
     translate(x, y, z);
     fill(45, 34, 15);
-    drawCylinder(1, 6, 3);
-    translate(0, 6, 0);
-    fill(69, 158, 18);
-    sphere(3);
+    drawCylinder(1, height, 2);
+    translate(0, height, 0);
+    fill(0, 50, 0);
+    sphere(radius);
     popMatrix();
   }
 }
 
+// family of trees
 class Forest {
+  // generate forest on a separate perlin noise
   private Tree[] trees = new Tree[T_DIM * T_DIM];
+  private float[] tree_map = new float[T_DIM * T_DIM];
+
+  Forest() {
+    for (int i = 0; i < T_DIM * T_DIM; i++) {
+      this.trees[i] = new Tree();
+    }
+
+    // initial generation
+    this.generate();
+  }
+
+  // generate perlin noise for the trees
+  public void generate() {
+    for (int z = 0; z < T_DIM; z++) {
+      for (int x = 0; x < T_DIM; x++) {
+        this.tree_map[z * T_DIM + x] = noise((x + offset_terrain[0]) * TREE_RES, (z + offset_terrain[1]) * TREE_RES);
+      }
+    }
+  }
+
+  // draw the trees naturally onto the terrain
+  public void drawForest(float[] terrain_map) {
+    float level;
+    int index;
+    for (int z = 0; z < T_DIM; z += 5) {
+      for (int x = 0; x < T_DIM; x += 5) {
+        index = z * T_DIM + x;
+        level = terrain_map[index];
+        if (level > T_THRES && level < T_AMP * 0.7f && this.tree_map[index] > 0.6f) {
+          trees[index].drawTree(x * T_SIZE, level, z * T_SIZE);
+        }
+      }
+    }
+  }
 }
   public void settings() {  size(800, 600, P3D); }
   static public void main(String[] passedArgs) {

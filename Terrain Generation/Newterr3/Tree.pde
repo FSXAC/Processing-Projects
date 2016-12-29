@@ -6,8 +6,10 @@ class Tree {
 
   // constructor
   Tree() {
-    height = random(8) + 5;
-    radius = random(height / 2) + height / 4;
+    // height = random(8) + 5;
+    // radius = random(height / 2) + height / 4;
+    height = 10;
+    radius = 3;
   }
 
   // draw the tree
@@ -15,9 +17,9 @@ class Tree {
     pushMatrix();
     translate(x, y, z);
     fill(45, 34, 15);
-    drawCylinder(1, height, 3);
-    translate(0, radius, 0);
-    fill(69, 158, 18);
+    drawCylinder(1, height, 2);
+    translate(0, height, 0);
+    fill(0, 50, 0);
     sphere(radius);
     popMatrix();
   }
@@ -49,13 +51,14 @@ class Forest {
 
   // draw the trees naturally onto the terrain
   public void drawForest(float[] terrain_map) {
-    float index, level;
-    for (int z = 0; z < T_DIM; z++) {
-      for (int x = 0; x < T_DIM; x++) {
-        index = z * T_DIM;
+    float level;
+    int index;
+    for (int z = 0; z < T_DIM; z += 5) {
+      for (int x = 0; x < T_DIM; x += 5) {
+        index = z * T_DIM + x;
         level = terrain_map[index];
-        if (level > T_THRES && level < T_AMP * 0.7 && this.tree_map[index] > 0.5) {
-          trees[index].drawTree(x, level, z);
+        if (level > T_THRES && level < T_AMP * 0.7 && this.tree_map[index] > 0.6) {
+          trees[index].drawTree(x * T_SIZE, level, z * T_SIZE);
         }
       }
     }
