@@ -31,7 +31,7 @@ class Terrain {
     else if (x >= 0 && x < this.size && z >= this.size) return get(x, z - 1);
     else if (x < 0 && z < 0)                            return get(0, 0);
     else if (x >= this.size && z >= this.size)          return get(x - 1, z - 1);
-    else                                                return map[z * size + x];
+    else                                                return map[z * this.size + x];
   }
 
   private void fillColour(float level) {
@@ -53,7 +53,6 @@ class Terrain {
     else fill(255, 255, 255);
   }
 
-  Tree tree = new Tree();
   public void display() {
     float o, a1, a2, d;
     for (int z = 0; z < this.size; z++) {
@@ -73,11 +72,6 @@ class Terrain {
         fillColour(a2);
         vertex(x * T_SIZE, a2, (z + 1) * T_SIZE);
         endShape(CLOSE);
-
-        // draw tree
-        if (o > T_THRES && o < T_AMP * 0.7 && random(100) < 2) {
-          tree.drawTree(x * T_SIZE, o, z * T_SIZE);
-        }
       }
     }
   }

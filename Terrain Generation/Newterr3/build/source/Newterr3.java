@@ -67,6 +67,9 @@ public void setup() {
   noiseSeed(T_SEED);
   noiseDetail(T_DETAIL, 0.5f);
   noStroke();
+
+  // initial generation
+  T.generate();
 }
 
 // Main draw loop function
@@ -110,7 +113,6 @@ public void draw() {
   translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
 
   // draw main terrain
-  T.generate();
   T.display();
   popMatrix();
 
@@ -159,6 +161,9 @@ public void checkKeyInput() {
         case LEFT : T.moveTerrain(0, 5); break;
         case RIGHT: T.moveTerrain(0, -5); break;
       }
+
+      // regenerate
+      T.generate();
     }
   }
 }
@@ -322,7 +327,6 @@ class Terrain {
     else fill(255, 255, 255);
   }
 
-  Tree tree = new Tree();
   public void display() {
     float o, a1, a2, d;
     for (int z = 0; z < this.size; z++) {
@@ -342,11 +346,6 @@ class Terrain {
         fillColour(a2);
         vertex(x * T_SIZE, a2, (z + 1) * T_SIZE);
         endShape(CLOSE);
-
-        // draw tree
-        if (o > T_THRES && o < T_AMP * 0.7f && random(100) < 2) {
-          tree.drawTree(x * T_SIZE, o, z * T_SIZE);
-        }
       }
     }
   }
@@ -379,6 +378,10 @@ class Tree {
     sphere(3);
     popMatrix();
   }
+}
+
+class Forest {
+  private Tree[] trees = new Tree[T_DIM * T_DIM];
 }
   public void settings() {  size(800, 600, P3D); }
   static public void main(String[] passedArgs) {

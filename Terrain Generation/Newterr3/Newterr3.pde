@@ -17,8 +17,13 @@ float T_THRES   = T_AMP * 0.4;
 int   T_SEED    = 123;
 int   T_DETAIL  = 4;
 Terrain T       = new Terrain(T_DIM);
+
+// WATER
 color WATER_TOP = color(81, 215, 239, 200);
 color WATER_BTM = color(19, 52, 58, 200);
+
+// TREES
+float TREE_RES = 0.01;
 
 // MODE
 // 1 - lateral movement
@@ -51,6 +56,9 @@ void setup() {
   noiseSeed(T_SEED);
   noiseDetail(T_DETAIL, 0.5);
   noStroke();
+
+  // initial generation
+  T.generate();
 }
 
 // Main draw loop function
@@ -94,7 +102,6 @@ void draw() {
   translate(-T_SIZE * T_DIM / 2, 0, -T_SIZE * T_DIM / 2);
 
   // draw main terrain
-  T.generate();
   T.display();
   popMatrix();
 
@@ -143,6 +150,9 @@ void checkKeyInput() {
         case LEFT : T.moveTerrain(0, 5); break;
         case RIGHT: T.moveTerrain(0, -5); break;
       }
+
+      // regenerate
+      T.generate();
     }
   }
 }
