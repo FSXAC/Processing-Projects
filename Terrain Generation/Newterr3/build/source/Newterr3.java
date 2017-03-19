@@ -439,7 +439,7 @@ class Forest {
 }
   public void settings() {  size(800, 600, P3D); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "Newterr3" };
+    String[] appletArgs = new String[] { "--present", "--window-color=#272727", "--stop-color=#cccccc", "Newterr3" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {

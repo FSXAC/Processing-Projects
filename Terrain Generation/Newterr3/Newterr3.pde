@@ -22,7 +22,7 @@ color WATER_TOP = color(81, 215, 239, 200);
 color WATER_BTM = color(19, 52, 58, 200);
 
 // TREES
-float TREE_RES = 0.01;
+float TREE_RES = 0.11;
 
 // MODE
 // 1 - lateral movement

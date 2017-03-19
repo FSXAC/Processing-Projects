@@ -1,5 +1,6 @@
 class Body {
   float size;
+  Boolean enabled = true;
   PVector position;
   PVector velocity;
   PVector acceleration = new PVector(0, 0);
@@ -34,9 +35,11 @@ class Body {
   }
 
   void display() {
-    stroke(10, map(velocity.magSq(), 0, 10, 20, 255), 10);
-    point(position.x, position.y);
-    update();
+    if (enabled) {
+      stroke(10, map(velocity.magSq(), 0, 10, 20, 255), 10);
+      point(position.x, position.y);
+      update();
+    }
   }
   
   void update() {
@@ -72,6 +75,9 @@ class Body {
   
   void attractTo(Attractor a) {
     // get unit vector of direction first
+    if(a.position.copy().sub(position).magSq() < 100) {
+      enabled = false;
+    }
     PVector force = PVector.sub(a.position, position).normalize();
     force.mult(a.mass * size);
     force.div(PVector.sub(a.position, position).magSq());  
