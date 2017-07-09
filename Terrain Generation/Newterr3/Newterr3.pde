@@ -9,7 +9,7 @@ float SCALE_SPEED    = 0.03;
 float SUN_SPEED      = 0.000;
 
 // TERRAIN
-int T_DIM      = 200;
+int T_DIM      = 8;
 float T_SIZE   = 5;
 float T_AMP    = 160;
 float T_RES    = 0.03;

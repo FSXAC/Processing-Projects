@@ -19,7 +19,7 @@ class Terrain {
       for (int x = 0; x < this.size; x++) {
         this.map[z * this.size + x] = T_AMP * noise(
           (x + offset_terrain[0]) * T_RES, (z + offset_terrain[1]) * T_RES
-        ) + ;
+        );
       }
     }
 
