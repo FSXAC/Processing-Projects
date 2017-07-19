@@ -9,12 +9,14 @@ attribute vec3 normal;
 attribute vec2 texCoord;
 
 varying vec4 vertColor;
+varying vec4 vertPosition;
 varying vec3 vertNormal;
 varying vec3 vertLightDir;
 varying vec4 vertTexCoord;
 
 void main() {
-  gl_Position = transform * position;  
+  gl_Position = transform * position;
+  vertPosition = position;
   vertColor = color;
   vertNormal = normalize(normalMatrix * normal);
   // vertLightDir = -lightNormal;
