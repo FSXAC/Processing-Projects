@@ -15,7 +15,7 @@ void setup() {
     cam.setMaximumDistance(500);
     cam.setSuppressRollRotationMode();
     
-    addChunkRadially();
+    generateChunks(0, 0, 10, 10);
 }
 
 void draw() {
@@ -23,11 +23,6 @@ void draw() {
     
     for (int i = 0; i < tChunks.size(); i++) {
         tChunks.get(i).draw();
-    }
-    
-    if (r < 10) {
-        addChunkRadially();
-        r++;
     }
     
     box(10);
@@ -38,23 +33,35 @@ void draw() {
     popMatrix();
 }
 
+int moveX = 0;
+int moveY = 0;
 void keyPressed() {
     if (key == ' ') {
-        r = 0;
-        tChunks.clear();
-        noiseSeed(frameCount);
+        // noiseSeed(frameCount);
+        moveX = 0;
+        moveY = 0;
+    } 
+
+    if (key == CODED) {
+        if (keyCode == UP) {
+            moveY++;
+        } else if (keyCode == DOWN) {
+            moveY--;
+        } else if (keyCode == LEFT) {
+            moveX--;
+        } else if (keyCode == RIGHT) {
+            moveX++;
+        }
     }
+    generateChunks(moveX, moveY, 10, 10);
 }
 
-void addChunkRadially() {
-    for (int x = -r; x <= r; x++) {
-        tChunks.add(new TerrainChunk(x, r));
-        if (r != 0) tChunks.add(new TerrainChunk(x, -r));
-    }
-    
-    for (int y = -r + 1; y < r; y++) {
-        tChunks.add(new TerrainChunk(r, y));
-        tChunks.add(new TerrainChunk(-r, y));
+void generateChunks(int startx, int starty, int w, int h) {
+    tChunks.clear();
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            tChunks.add(new TerrainChunk(x, y));
+        }
     }
 }
 
