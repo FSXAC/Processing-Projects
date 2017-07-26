@@ -3,7 +3,7 @@ import peasy.*;
 PeasyCam cam;
 ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
 int r = 0;
-float[] GLOBAL_TERRAIN_OFFSET = { 0, 0 };
+float[] GLOBAL_TERRAIN_OFFSET = { 3000, 3000 };
 
 int moveX = 0;
 int moveY = 0;
@@ -28,55 +28,37 @@ void draw() {
         tChunks.get(i).draw();
     }
 
-    //if (keyPressed && key == CODED) {
-    //    switch(key) {
-    //    case UP:    moveYPos++; break;
-    //    case DOWN:  moveYPos--; break;
-    //    case LEFT:  moveXPos++; break;
-    //    case RIGHT: moveXPos--; break;
-    //    }
-    //    generateChunks(moveX, moveY, 10, 10);
-    //}
-    if (keyPressed) {
-        if (key == CODED) {
-             if (keyCode == UP) {
-                 moveYPos += 3;
-                 checkChunkCoords();
-             } else if (keyCode == DOWN) {
-                 moveYPos -= 3;
-                 checkChunkCoords();
-             } else if (keyCode == LEFT) {
-                 moveXPos += 3;
-                 checkChunkCoords();
-             } else if (keyCode == RIGHT) {
-                 moveXPos -= 3;
-                 checkChunkCoords();
-             }
-         }
+    if (keyPressed && key == CODED) {
+        switch(key) {
+        case UP:    moveYPos++; break;
+        case DOWN:  moveYPos--; break;
+        case LEFT:  moveXPos++; break;
+        case RIGHT: moveXPos--; break;
+        }
+        /generateChunks(moveX, moveY, 10, 10);
     }
 }
 
-void checkChunkCoords() {
-    if (moveYPos > 80) {
-        moveYPos = moveYPos % 80;
-        moveY--;
-        generateChunks(moveX, moveY, 10, 10);
-    } else if (moveYPos < -80) {
-        moveYPos = moveYPos % 80;
-        moveY++;
-        generateChunks(moveX, moveY, 10, 10);
-    }
-    
-    if (moveXPos > 80) {
-        moveXPos = moveXPos % 80;
-        moveX--;
-        generateChunks(moveX, moveY, 10, 10);
-    } else if (moveXPos < -80) {
-        moveXPos = moveXPos % 80;
-        moveX++;
-        generateChunks(moveX, moveY, 10, 10);
-    }
-}
+// void keyPressed() {
+//     if (key == ' ') {
+//         // noiseSeed(frameCount);
+//         moveX = 0;
+//         moveY = 0;
+//     } 
+
+//     if (key == CODED) {
+//         if (keyCode == UP) {
+//             moveY++;
+//         } else if (keyCode == DOWN) {
+//             moveY--;
+//         } else if (keyCode == LEFT) {
+//             moveX--;
+//         } else if (keyCode == RIGHT) {
+//             moveX++;
+//         }
+//     }
+//     generateChunks(moveX, moveY, 10, 10);
+// }
 
 void generateChunks(int startx, int starty, int w, int h) {
     tChunks.clear();
@@ -139,6 +121,14 @@ class TerrainChunk {
             }
         }
         endShape();
+        popMatrix();
+    }
+
+
+    public void renderTerrainRet() {
+        pushMatrix();
+        translate(translation[0] * CHUNK_SIZE * TILE_SIZE, 0, translation[1] * CHUNK_SIZE * TILE_SIZE);
+        shape(chunk);
         popMatrix();
     }
 
