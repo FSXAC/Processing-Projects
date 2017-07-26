@@ -60,7 +60,7 @@ void generateChunks(int startx, int starty, int w, int h) {
     tChunks.clear();
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
-            tChunks.add(new TerrainChunk(x, y));
+            tChunks.add(new TerrainChunk(startx + x, starty + y));
         }
     }
 }
@@ -136,7 +136,6 @@ class TerrainChunk {
     public void renderTerrainRet() {
         pushMatrix();
         translate(translation[0] * CHUNK_SIZE * TILE_SIZE, 0, translation[1] * CHUNK_SIZE * TILE_SIZE);
-        text("(" + str(translation[0]) + ", " + str(translation[1]) + ")", 0, 0);
         shape(chunk);
         popMatrix();
     }
