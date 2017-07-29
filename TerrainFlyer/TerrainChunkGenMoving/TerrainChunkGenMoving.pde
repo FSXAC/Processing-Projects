@@ -27,16 +27,6 @@ void draw() {
     for (int i = 0; i < tChunks.size(); i++) {
         tChunks.get(i).draw();
     }
-
-    //if (keyPressed && key == CODED) {
-    //    switch(key) {
-    //    case UP:    moveYPos++; break;
-    //    case DOWN:  moveYPos--; break;
-    //    case LEFT:  moveXPos++; break;
-    //    case RIGHT: moveXPos--; break;
-    //    }
-    //    generateChunks(moveX, moveY, 10, 10);
-    //}
     if (keyPressed) {
         if (key == CODED) {
              if (keyCode == UP) {

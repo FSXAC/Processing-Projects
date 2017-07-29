@@ -1,75 +1,213 @@
+int[] terrainChunkOffset = { 3000, 3000 };
+
 class Terrain {
-    private final float AMPLITUDE = 400;
-    private final float RES = 0.1;
-    private final float TILE_SIZE = 100;
+    static final int chunkWidth = 10;
+    static final int chunkHeight = 10;
+    
+    ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
 
-    private int size;
-    private float[] heightMap;
-    private float[] translation = {0, 0};
+    int[] terrainOffset = { 0, 0 };
+    int[] terrainMoveOffset = { 0, 0 };
 
-    Terrain(int size) {
-        this.size = size;
-        this.heightMap = new float [size * size + 1];
-        this.generateHeightMap();
+    Terrain() {
+        this.generateChunks(0, 0, chunkWidth, chunkHeight);
     }
 
-    public void draw() {
+    void generateChunks(int startx, int starty, int w, int h) {
+        tChunks.clear();
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                tChunks.add(new TerrainChunk(startx + x, starty + y));
+            }
+        }
+    }
+
+    void draw() {
         pushMatrix();
-        translate(-(this.size * TILE_SIZE)/2, -height / 2, AMPLITUDE);
-        rotateX(-PI / 2);
-        this.renderTerrain();
+        rotateX(PI / 2);
+        translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
+        translate(terrainMoveOffset[0], 0, terrainMoveOffset[1]);
+        translate(-terrainOffset[0] * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, 0, -1.0 * (terrainOffset[1] - 1) * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
+        for (int i = 0; i < tChunks.size(); i++) {
+            tChunks.get(i).draw();
+        }
+        if (keyPressed) {
+            if (key == CODED) {
+                if (keyCode == UP) {
+                    terrainMoveOffset[1] += 30;
+                    checkChunkCoords();
+                } else if (keyCode == DOWN) {
+                    terrainMoveOffset[1] -= 30;
+                    checkChunkCoords();
+                } else if (keyCode == LEFT) {
+                    terrainMoveOffset[0] += 30;
+                    checkChunkCoords();
+                } else if (keyCode == RIGHT) {
+                    terrainMoveOffset[0] -= 30;
+                    checkChunkCoords();
+                }
+            }
+        }
         popMatrix();
-
-        this.update();
     }
 
-    public void update() {
-        this.translation[0] += RES * 0.2 * player.getHorizonalSpeed();
-        this.translation[1] += RES * 0.2 * player.getSpeed();
+    void checkChunkCoords() {
+        int step = int(TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
+        if (terrainMoveOffset[1] > step) {
+            terrainMoveOffset[1] = terrainMoveOffset[1] % step;
+            terrainOffset[1]--;
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+        } else if (terrainMoveOffset[1] < -step) {
+            terrainMoveOffset[1] = terrainMoveOffset[1] % step;
+            terrainOffset[1]++;
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+        }
+        
+        if (terrainMoveOffset[0] >step) {
+            terrainMoveOffset[0] = terrainMoveOffset[0] % step;
+            terrainOffset[0]--;
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+        } else if (terrainMoveOffset[0] < -step) {
+            terrainMoveOffset[0] = terrainMoveOffset[0] % step;
+            terrainOffset[0]++;
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+        }
+    }
+}
+
+class TerrainChunk {
+    static final float AMPLITUDE = 1000;
+    static final float SCALE = 10;
+    static final float TILE_SIZE = 100;
+    static final int CHUNK_SIZE = 8;
+
+    private float[] heightMap;
+    private float[] chunkCoord = {0, 0};
+
+    PShape chunk;
+
+    TerrainChunk(int chunkX, int chunkY) {
+        this.heightMap = new float[CHUNK_SIZE * CHUNK_SIZE + 1];
         this.generateHeightMap();
+        
+        this.chunkCoord[0] = chunkX;
+        this.chunkCoord[1] = chunkY;
+    }
+    
+    public void draw() {
+        this.generateHeightMap();
+        this.renderTerrainImm();
     }
 
-    public void renderTerrain() {
-        beginShape(QUADS);
+    public void renderTerrainImm() {
+        pushMatrix();
         noStroke();
-
+        //translate(
+        //    (chunkCoord[0] - terrainOffset[0]) * CHUNK_SIZE * TILE_SIZE, 
+        //    0, 
+        //    (chunkCoord[1] - terrainOffset[1]) * CHUNK_SIZE * TILE_SIZE
+        //    );
+                //translate(
+        translate(chunkCoord[0] * CHUNK_SIZE * TILE_SIZE, 0, chunkCoord[1] * CHUNK_SIZE * TILE_SIZE);
+        beginShape(QUADS);
         float o, a1, a2, d;
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int x = 0; x < CHUNK_SIZE; x++) {
+                o  = getHeightAt(x, y);
+                a1 = getHeightAt(x + 1, y);
+                a2 = getHeightAt(x, y + 1);
+                d  = getHeightAt(x + 1, y + 1);
 
-        for (int y = 0; y < this.size; y++) {
-            for (int x = 0; x < this.size; x++) {
-                o  = this.get(x, y);
-                a1 = this.get(x + 1, y);
-                a2 = this.get(x, y + 1);
-                d  = this.get(x + 1, y + 1);
-
+                fillColor(o);
                 vertex(x * TILE_SIZE, o, y * TILE_SIZE);
+                fillColor(a1);
                 vertex((x + 1) * TILE_SIZE, a1, y * TILE_SIZE);
+                fillColor(d);
                 vertex((x + 1) * TILE_SIZE, d, (y + 1) * TILE_SIZE);
+                fillColor(a2);
                 vertex(x * TILE_SIZE, a2, (y + 1) * TILE_SIZE);
             }
         }
         endShape();
+        popMatrix();
     }
-    
+
+    public void generateShape() {
+        chunk.beginShape(QUADS);
+        chunk.noStroke();
+        float o, a1, a2, d;
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int x = 0; x < CHUNK_SIZE; x++) {
+                o  = getHeightAt(x, y);
+                a1 = getHeightAt(x + 1, y);
+                a2 = getHeightAt(x, y + 1);
+                d  = getHeightAt(x + 1, y + 1);
+
+                fillColor(o);
+                chunk.vertex(x * TILE_SIZE, o, y * TILE_SIZE);
+                fillColor(a1);
+                chunk.vertex((x + 1) * TILE_SIZE, a1, y * TILE_SIZE);
+                fillColor(d);
+                chunk.vertex((x + 1) * TILE_SIZE, d, (y + 1) * TILE_SIZE);
+                fillColor(a2);
+                chunk.vertex(x * TILE_SIZE, a2, (y + 1) * TILE_SIZE);
+            }
+        }
+        chunk.endShape();
+    }
+
+    public float getHeightAt(int x, int y) {
+        // Corner cases
+        if      (inside(y) && x < 0)
+            return getHeightAt(0, y);                           // x too small
+        else if (inside(x) && y < 0)
+            return getHeightAt(x, 0);                           // y too small
+        else if (inside(y) && x >= CHUNK_SIZE)
+            return getHeightAt(CHUNK_SIZE - 1, y);              // x too big
+        else if (inside(x) && y >= CHUNK_SIZE)
+            return getHeightAt(x, CHUNK_SIZE - 1);              // y too big
+        else if (x < 0 && y < 0)
+            return getHeightAt(0, 0);                           // x and y too small
+        else if (x >= CHUNK_SIZE && y >= CHUNK_SIZE)
+            return getHeightAt(CHUNK_SIZE - 1, CHUNK_SIZE - 1); // x and y too big
+        else
+            return heightMap[y * CHUNK_SIZE + x];
+    }
+
+    private boolean inside(int n) {
+        return (n >= 0 && n < CHUNK_SIZE);
+    }
+
     private void generateHeightMap() {
-        for (int y = 0; y < this.size; y++) {
-            for (int x = 0; x < this.size; x++) {
-                float noiseHeight = noise(RES * (x + translation[0]), RES * (y + translation[1]));
-                this.heightMap[y * this.size + x] = AMPLITUDE * noiseHeight;
+        for (int i = 0; i < CHUNK_SIZE; i++) {
+            for (int j = 0; j < CHUNK_SIZE; j++) {
+                float noiseHeight = noise(
+                    ((terrainChunkOffset[0] + chunkCoord[0]) * (CHUNK_SIZE - 1) + i) / SCALE,
+                    ((terrainChunkOffset[1] + chunkCoord[1]) * (CHUNK_SIZE - 1) + j) / SCALE
+                );
+                // noiseHeight = -AMPLITUDE * (noiseHeight - 0.5);
+                noiseHeight = AMPLITUDE * noiseHeight;
+                this.heightMap[j * CHUNK_SIZE + i] = noiseHeight;
             }
         }
     }
 
-    // return the height at specified x and z
-    private float get(int x, int z) {
-        if (x < 0 && z >= 0 && z < this.size)               return get(x + 1, z);
-        else if (x >= 0 && z < 0 && z < this.size)          return get(x, z + 1);
-        else if (z >= 0 && x >= this.size && z < this.size) return get(x - 1, z);
-        else if (x >= 0 && x < this.size && z >= this.size) return get(x, z - 1);
-        else if (x < 0 && z < 0)                            return get(0, 0);
-        else if (x >= this.size && z >= this.size)          return get(x - 1, z - 1);
-        else                                                return heightMap[z * this.size + x];
+    private void fillColor(float level) {
+        if (level < (AMPLITUDE * 0.4)) {
+            fill(lerpColor(
+                color(58, 42, 41),
+                color(224, 219, 197),
+                map(level, (AMPLITUDE * 0.4) / 2, (AMPLITUDE * 0.4), 0, 1)
+            ));
+        } else if (level < AMPLITUDE * 0.7) {
+            // land
+            fill(lerpColor(
+                color(54, 84, 31),
+                color(198, 204, 142),
+                map(level, (AMPLITUDE * 0.4), AMPLITUDE, 0, 1)
+            ));
+        } else {
+            fill(255, 255, 255);
+        }
     }
-
-    
 }

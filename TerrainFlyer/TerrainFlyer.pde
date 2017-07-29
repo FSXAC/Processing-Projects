@@ -3,9 +3,7 @@
 // LOL
 
 Player player;
-Terrain terrain;
-
-
+Terrain t;
 
 final int groundWidth = 3000;
 final int groundDepth = 10000;
@@ -22,10 +20,9 @@ void setup() {
     
     // intialize game objects
     player = new Player();
+    t = new Terrain();
     generateBlocks(blocks);
-    
-    terrain = new Terrain(100);
-    terrain.generateHeightMap();
+
 }
 
 void draw() {
@@ -33,15 +30,14 @@ void draw() {
     drawLights();
     
     pushMatrix();
-    // translate(width/2, height/2+100, -700);
-    // rotateX(1.5 * PI - radians(map(mouseY, 0, height, 0, 90)));
+     //translate(width/2, height/2+100, -700);
+     //rotateX(1.5 * PI - radians(map(mouseY, 0, height, 0, 90)));
     translate(width/2, height/2+100, -150);
     rotateX(1.5 * PI - radians(5));
     
     // =====[ Draw objects in the 3D scene ]=====
     //drawGround();
-    
-    terrain.draw();
+    t.draw();
     player.draw();
     drawBlocks(blocks);
     // =====[ End of objects in the 3D scene ]=====
@@ -57,9 +53,9 @@ void generateBlocks(Block[] blocks) {
 }
 
 void drawBlocks(Block[] blocks) {
-    for (Block b : blocks) {
-        b.draw();
-    }
+     //for (Block b : blocks) {
+     //    b.draw();
+     //}
 }
 
 void drawLights() {
