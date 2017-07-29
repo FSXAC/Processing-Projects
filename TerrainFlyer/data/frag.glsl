@@ -34,7 +34,8 @@ void main() {
         specular = pow(specAngle, 4.0);
     }
 
-    vec4 fragColor = vec4(lambertian * diffuseColor + specular * specColor, 1.0);
+    // vec4 fragColor = vec4(lambertian * diffuseColor + specular * specColor, 1.0);
+    vec4 fragColor = vec4(vec3(dot(vertNormal, vec3(0.0, 1.0, 0.0))), 1.0);
 
     gl_FragColor = texture2D(texture, vertTexCoord.st) * fragColor * vertColor;  
 }

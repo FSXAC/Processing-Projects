@@ -67,13 +67,13 @@ class Player {
     private void update() {
         // update any private members here
         turnValue = lerp(turnValue, mouseX, 0.3);
-        speed = lerp(speed, map(mouseY, 0, height, 100, 10), 0.01);
+        speed = lerp(speed, map(mouseY, 0, height, 100, 10), 0.1);
     }
     
     private void renderGeometry() {
-        shader(playerShader);
+        //shader(playerShader);
         shape(playerModel);
-        resetShader();
+        //resetShader();
         
         if (usingExternShape) {
             shape(exhaustModel);

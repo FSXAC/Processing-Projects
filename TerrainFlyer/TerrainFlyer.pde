@@ -12,6 +12,13 @@ final int MAX_BLOCKS = 100;
 
 Block[] blocks = new Block[MAX_BLOCKS];
 
+float turnCameraOffset = 0;
+float turnCameraOffset_tgt = 0;
+float turnCameraAngle = 0;
+float turnCameraAngle_tgt = 0;
+float speedCameraOffset = 0;
+float speedCameraOffset_tgt = 0;
+
 void setup() {
 
     // initialize grpahics
@@ -32,8 +39,20 @@ void draw() {
     pushMatrix();
      //translate(width/2, height/2+100, -700);
      //rotateX(1.5 * PI - radians(map(mouseY, 0, height, 0, 90)));
-    translate(width/2, height/2+100, -150);
+
+
+    float mouseXNormalized = map(mouseX, 0, width, -1.0, 1.0);
+
+    turnCameraOffset_tgt = mouseXNormalized * -100;
+    turnCameraOffset = lerp(turnCameraOffset, turnCameraOffset_tgt, 0.1);
+    turnCameraAngle_tgt = mouseXNormalized * PI / 12;
+    turnCameraAngle = lerp(turnCameraAngle, turnCameraAngle_tgt, 0.1);
+    speedCameraOffset_tgt = map(player.getSpeed(), 10, 100, -50, 150);
+    speedCameraOffset = lerp(speedCameraOffset, speedCameraOffset_tgt, 0.1);
+
+    translate(width/2 + turnCameraOffset, height/2+100, -150 - speedCameraOffset);
     rotateX(1.5 * PI - radians(5));
+    rotateY(turnCameraAngle);
     
     // =====[ Draw objects in the 3D scene ]=====
     //drawGround();

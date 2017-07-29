@@ -1,8 +1,8 @@
 int[] terrainChunkOffset = { 3000, 3000 };
 
 class Terrain {
-    static final int chunkWidth = 10;
-    static final int chunkHeight = 10;
+    static final int chunkWidth = 12;
+    static final int chunkDepth = 9;
     
     ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
 
@@ -10,7 +10,7 @@ class Terrain {
     int[] terrainMoveOffset = { 0, 0 };
 
     Terrain() {
-        this.generateChunks(0, 0, chunkWidth, chunkHeight);
+        this.generateChunks(0, 0, chunkWidth, chunkDepth);
     }
 
     void generateChunks(int startx, int starty, int w, int h) {
@@ -25,13 +25,13 @@ class Terrain {
     void draw() {
         pushMatrix();
         rotateX(PI / 2);
-        translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
+        translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkDepth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
         translate(terrainMoveOffset[0], 0, terrainMoveOffset[1]);
         translate(-terrainOffset[0] * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, 0, -1.0 * (terrainOffset[1] - 1) * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
         for (int i = 0; i < tChunks.size(); i++) {
             tChunks.get(i).draw();
         }
-        if (keyPressed) {
+        /*if (keyPressed) {
             if (key == CODED) {
                 if (keyCode == UP) {
                     terrainMoveOffset[1] += 30;
@@ -47,7 +47,11 @@ class Terrain {
                     checkChunkCoords();
                 }
             }
-        }
+        }*/
+        terrainMoveOffset[1] += player.getSpeed();
+        println(player.getSpeed());
+        terrainMoveOffset[0] += -player.getHorizonalSpeed();
+        checkChunkCoords();
         popMatrix();
     }
 
@@ -56,21 +60,21 @@ class Terrain {
         if (terrainMoveOffset[1] > step) {
             terrainMoveOffset[1] = terrainMoveOffset[1] % step;
             terrainOffset[1]--;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
         } else if (terrainMoveOffset[1] < -step) {
             terrainMoveOffset[1] = terrainMoveOffset[1] % step;
             terrainOffset[1]++;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
         }
         
         if (terrainMoveOffset[0] >step) {
             terrainMoveOffset[0] = terrainMoveOffset[0] % step;
             terrainOffset[0]--;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
         } else if (terrainMoveOffset[0] < -step) {
             terrainMoveOffset[0] = terrainMoveOffset[0] % step;
             terrainOffset[0]++;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkHeight);
+            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
         }
     }
 }
@@ -109,6 +113,8 @@ class TerrainChunk {
         //    );
                 //translate(
         translate(chunkCoord[0] * CHUNK_SIZE * TILE_SIZE, 0, chunkCoord[1] * CHUNK_SIZE * TILE_SIZE);
+        // textSize(50);
+        // text("(" + str(chunkCoord[0]) + ", " + str(chunkCoord[1]) + ")", 0, 0);
         beginShape(QUADS);
         float o, a1, a2, d;
         for (int y = 0; y < CHUNK_SIZE; y++) {
