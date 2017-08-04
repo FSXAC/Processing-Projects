@@ -9,8 +9,11 @@ class Terrain {
     int[] terrainOffset = { 0, 0 };
     int[] terrainMoveOffset = { 0, 0 };
 
+    PShader terrainShader;
+
     Terrain() {
         this.generateChunks(0, 0, chunkWidth, chunkDepth);
+        this.terrainShader = loadShader("terrainFrag.glsl", "terrainVert.glsl");
     }
 
     void generateChunks(int startx, int starty, int w, int h) {
@@ -23,6 +26,9 @@ class Terrain {
     }
 
     void draw() {
+        // load shader
+        this.terrainShader.set("speed", player.getSpeed());
+        shader(this.terrainShader);
         pushMatrix();
         rotateX(PI / 2);
         translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkDepth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
@@ -31,28 +37,14 @@ class Terrain {
         for (int i = 0; i < tChunks.size(); i++) {
             tChunks.get(i).draw();
         }
-        /*if (keyPressed) {
-            if (key == CODED) {
-                if (keyCode == UP) {
-                    terrainMoveOffset[1] += 30;
-                    checkChunkCoords();
-                } else if (keyCode == DOWN) {
-                    terrainMoveOffset[1] -= 30;
-                    checkChunkCoords();
-                } else if (keyCode == LEFT) {
-                    terrainMoveOffset[0] += 30;
-                    checkChunkCoords();
-                } else if (keyCode == RIGHT) {
-                    terrainMoveOffset[0] -= 30;
-                    checkChunkCoords();
-                }
-            }
-        }*/
         terrainMoveOffset[1] += player.getSpeed();
-        println(player.getSpeed());
         terrainMoveOffset[0] += -player.getHorizonalSpeed();
+        println(player.getSpeed());
         checkChunkCoords();
         popMatrix();
+
+        // reset shader
+        resetShader();
     }
 
     void checkChunkCoords() {
@@ -100,21 +92,13 @@ class TerrainChunk {
     
     public void draw() {
         this.generateHeightMap();
-        this.renderTerrainImm();
+        this.renderTerrain();
     }
 
-    public void renderTerrainImm() {
+    public void renderTerrain() {
         pushMatrix();
         noStroke();
-        //translate(
-        //    (chunkCoord[0] - terrainOffset[0]) * CHUNK_SIZE * TILE_SIZE, 
-        //    0, 
-        //    (chunkCoord[1] - terrainOffset[1]) * CHUNK_SIZE * TILE_SIZE
-        //    );
-                //translate(
         translate(chunkCoord[0] * CHUNK_SIZE * TILE_SIZE, 0, chunkCoord[1] * CHUNK_SIZE * TILE_SIZE);
-        // textSize(50);
-        // text("(" + str(chunkCoord[0]) + ", " + str(chunkCoord[1]) + ")", 0, 0);
         beginShape(QUADS);
         float o, a1, a2, d;
         for (int y = 0; y < CHUNK_SIZE; y++) {

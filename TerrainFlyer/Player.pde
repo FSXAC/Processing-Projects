@@ -23,7 +23,6 @@ class Player {
             playerModel = loadShape("rocket.obj");
             playerModel.scale(0.5);
             playerModel.rotateY(-PI / 2);
-            
             this.createExhaustGeometry();
         } else {
             playerModel = createShape(GROUP);
