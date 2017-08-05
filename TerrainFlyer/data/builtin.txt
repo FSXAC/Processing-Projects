@@ -1,0 +1,44 @@
+BUILT IN UNIFORMS AND ATTRIBUTES
+
+============[ ATTRIBUTES ]============
+attribute vec3 vertex || position
+
+attribute vec4 color
+attribute vec2 textCoord
+attribute vec3 normal
+
+attribute float ambient
+attribute float specular
+attribute float emissive
+attribute float shininess
+
+attribute ?? direction
+attribute ?? offset
+
+============[ UNIFORMS ]============
+uniform mat4 transform || transformMatrix
+uniform mat4 modelview || modelViewMatrix
+uniform mat4 projection || projectionMatrix
+
+uniform ?? viewport
+uniform ?? resolution
+uniform ?? ppixels
+
+uniform mat3 normalMatrix
+
+uniform int lightCount ................. number of active lights
+uniform vec4 lightPosition[8] .......... position of each light
+uniform vec3 lightNormal[8] ............ direction of each light (only relevant for directional and spot lights)
+uniform vec3 lightAmbient[8] ........... ambient component of light color
+uniform vec3 lightDiffuse[8] ........... diffuse component of light color
+uniform vec3 lightSpecular[8] .......... specular component of light color
+uniform vec3 lightFalloff[8] ........... light falloff coefficients
+uniform vec2 lightSpot[8] .............. light spot parameters (cosine of light spot angle and concentration)
+
+uniform sampler2D texture || texMap
+
+uniform mat4 texMatrix
+uniform vec2 texOffset
+
+uniform ?? perspective
+uniform ?? scale

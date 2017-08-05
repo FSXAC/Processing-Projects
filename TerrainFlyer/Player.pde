@@ -1,6 +1,7 @@
 class Player {
     // constants
-    public final float TURN_ROLL_ANGLE = PI/3;
+    public final float TURN_ROLL_ANGLE = 0;
+    // public final float TURN_ROLL_ANGLE = PI/3;
     public final float TURN_YAW_ANGLE = 0;
     public final float TURN_SENSITIVITY = 15;
     
