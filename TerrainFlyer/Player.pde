@@ -34,9 +34,7 @@ class Player {
         playerTrail = new PlayerTrail();
         
         // load shaders
-        playerShader = loadShader("frag.glsl", "vert.glsl");
-        //playerShader = loadShader("embossfrag.glsl");
-        //toonShader.set("fraction", 1.0);
+        playerShader = loadShader("playerFrag.glsl", "playerVert.glsl");
     }
     
     public void draw() {
@@ -71,15 +69,16 @@ class Player {
     }
     
     private void renderGeometry() {
-        //shader(playerShader);
+        shader(playerShader);
         shape(playerModel);
-        //resetShader();
+        resetShader();
         
         if (usingExternShape) {
             shape(exhaustModel);
+            pointLight(255, 255, 255, 0, 0, 0);
         }
         
-        this.playerTrail.draw();
+        // this.playerTrail.draw();
     }
     
     private void createGeometry() {

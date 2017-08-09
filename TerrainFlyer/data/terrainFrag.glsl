@@ -13,8 +13,6 @@ float map(float x, float in_min, float in_max, float out_min, float out_max) {
 }
 
 void main() {
-	// gl_FragColor = v_vertColor;
-	// gl_FragColor = vec4(0.0, 0.5, 0.2, 1.0);
 	float r = abs(dot(v_vertNormal, vec3(1.0, 0.0, 0.0)));
 	float g = abs(dot(v_vertNormal, vec3(0.0, 1.0, 0.0)));
 	float b = abs(dot(v_vertNormal, vec3(0.0, 0.0, 1.0)));
@@ -22,5 +20,5 @@ void main() {
 
 	float k = clamp(map(speed, 50.0, 100.0, 0.0, 1.0), 0.0, 1.0);
 
-	gl_FragColor =  k * normalColor + (1.0 - k) * v_vertColor;
+	gl_FragColor =  k * normalColor + (1.0 - k) * v_vertColor;	
 }
