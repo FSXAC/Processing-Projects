@@ -8,7 +8,9 @@ Terrain t;
 final int groundWidth = 3000;
 final int groundDepth = 10000;
 
-final int MAX_BLOCKS = 100;
+final int MAX_BLOCKS = 30;
+
+final boolean FANCY_SHADERS = false;
 
 Block[] blocks = new Block[MAX_BLOCKS];
 
@@ -62,6 +64,22 @@ void draw() {
     // =====[ End of objects in the 3D scene ]=====
     
     popMatrix();
+
+    // draw anime effects
+    if (player.getSpeed() > 90) {
+        PVector center = new PVector(width / 2, height / 2);
+
+        stroke(255);
+        strokeWeight(1);
+        for (int i = 0; i < 3; i++) {
+            PVector point1 = new PVector(random(-200, 200) + width / 2, random(-200, 200) + height / 2);
+            PVector vecToCenter = PVector.sub(point1, center);
+            PVector point2 = PVector.add(point1, vecToCenter.normalize().mult(random(200, 800)));
+
+            line(point1.x, point1.y, point2.x, point2.y);
+        }
+        noStroke();
+    }
 }
 
 // generate a bunch of blocks
@@ -72,9 +90,9 @@ void generateBlocks(Block[] blocks) {
 }
 
 void drawBlocks(Block[] blocks) {
-     //for (Block b : blocks) {
-     //    b.draw();
-     //}
+     for (Block b : blocks) {
+        b.draw();
+     }
 }
 
 void drawLights() {

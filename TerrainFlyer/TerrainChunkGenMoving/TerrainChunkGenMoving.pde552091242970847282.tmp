@@ -1,85 +1,82 @@
-int[] terrainChunkOffset = { 3000, 3000 };
+import peasy.*;
 
-class Terrain {
-    static final int chunkWidth = 12;
-    static final int chunkDepth = 9;
+PeasyCam cam;
+ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
+int r = 0;
+float[] GLOBAL_TERRAIN_OFFSET = { 3000, 3000 };
+
+int moveX = 0;
+int moveY = 0;
+int moveXPos = 0;
+int moveYPos = 0;
+
+void setup() {
+    size(1280, 800, P3D);
+
+    cam = new PeasyCam(this, 100);
+    cam.setMinimumDistance(50);
+    cam.setMaximumDistance(500);
+    cam.setSuppressRollRotationMode();
     
-    ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
+    generateChunks(0, 0, 10, 10);
+}
 
-    int[] terrainOffset = { 0, 0 };
-    int[] terrainMoveOffset = { 0, 0 };
-
-    PShader terrainShader;
-
-    Terrain() {
-        this.generateChunks(0, 0, chunkWidth, chunkDepth);
-        this.terrainShader = loadShader("terrainFrag.glsl", "terrainVert.glsl");
+void draw() {
+    background(#6589A7);
+    
+    for (int i = 0; i < tChunks.size(); i++) {
+        tChunks.get(i).draw();
     }
 
-    void generateChunks(int startx, int starty, int w, int h) {
-        tChunks.clear();
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                tChunks.add(new TerrainChunk(startx + x, starty + y));
-            }
+    if (keyPressed && key == CODED) {
+        switch(key) {
+        case UP:    moveYPos++; break;
+        case DOWN:  moveYPos--; break;
+        case LEFT:  moveXPos++; break;
+        case RIGHT: moveXPos--; break;
         }
+        /generateChunks(moveX, moveY, 10, 10);
     }
+}
 
-    void draw() {
-        // load shader
-        this.terrainShader.set("speed", player.getSpeed());
+// void keyPressed() {
+//     if (key == ' ') {
+//         // noiseSeed(frameCount);
+//         moveX = 0;
+//         moveY = 0;
+//     } 
 
-        if (FANCY_SHADERS) shader(this.terrainShader);
-        pushMatrix();
-        rotateX(PI / 2);
-        translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkDepth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
-        translate(terrainMoveOffset[0], 0, terrainMoveOffset[1]);
-        translate(-terrainOffset[0] * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, 0, -1.0 * (terrainOffset[1] - 1) * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
-        for (int i = 0; i < tChunks.size(); i++) {
-            tChunks.get(i).draw();
-        }
-        terrainMoveOffset[1] += player.getSpeed();
-        terrainMoveOffset[0] += -player.getHorizonalSpeed();
-        println(player.getSpeed());
-        checkChunkCoords();
-        popMatrix();
+//     if (key == CODED) {
+//         if (keyCode == UP) {
+//             moveY++;
+//         } else if (keyCode == DOWN) {
+//             moveY--;
+//         } else if (keyCode == LEFT) {
+//             moveX--;
+//         } else if (keyCode == RIGHT) {
+//             moveX++;
+//         }
+//     }
+//     generateChunks(moveX, moveY, 10, 10);
+// }
 
-        // reset shader
-        if (FANCY_SHADERS) resetShader();
-    }
-
-    void checkChunkCoords() {
-        int step = int(TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
-        if (terrainMoveOffset[1] > step) {
-            terrainMoveOffset[1] = terrainMoveOffset[1] % step;
-            terrainOffset[1]--;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
-        } else if (terrainMoveOffset[1] < -step) {
-            terrainMoveOffset[1] = terrainMoveOffset[1] % step;
-            terrainOffset[1]++;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
-        }
-        
-        if (terrainMoveOffset[0] >step) {
-            terrainMoveOffset[0] = terrainMoveOffset[0] % step;
-            terrainOffset[0]--;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
-        } else if (terrainMoveOffset[0] < -step) {
-            terrainMoveOffset[0] = terrainMoveOffset[0] % step;
-            terrainOffset[0]++;
-            generateChunks(terrainOffset[0], terrainOffset[1], chunkWidth, chunkDepth);
+void generateChunks(int startx, int starty, int w, int h) {
+    tChunks.clear();
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            tChunks.add(new TerrainChunk(startx + x, starty + y));
         }
     }
 }
 
 class TerrainChunk {
-    static final float AMPLITUDE = 1000;
-    static final float SCALE = 10;
-    static final float TILE_SIZE = 100;
-    static final int CHUNK_SIZE = 8;
+    private float AMPLITUDE = 200;
+    private float SCALE = 10;
+    private float TILE_SIZE = 10;
+    private int CHUNK_SIZE = 8;
 
     private float[] heightMap;
-    private float[] chunkCoord = {0, 0};
+    private float[] translation = {0, 0};
 
     PShape chunk;
 
@@ -87,19 +84,23 @@ class TerrainChunk {
         this.heightMap = new float[CHUNK_SIZE * CHUNK_SIZE + 1];
         this.generateHeightMap();
         
-        this.chunkCoord[0] = chunkX;
-        this.chunkCoord[1] = chunkY;
+        this.translation[0] = chunkX;
+        this.translation[1] = chunkY;
     }
     
     public void draw() {
         this.generateHeightMap();
-        this.renderTerrain();
+        this.renderTerrainImm();
     }
 
-    public void renderTerrain() {
+    public void renderTerrainImm() {
         pushMatrix();
         noStroke();
-        translate(chunkCoord[0] * CHUNK_SIZE * TILE_SIZE, 0, chunkCoord[1] * CHUNK_SIZE * TILE_SIZE);
+        translate(
+            (translation[0] - moveX) * CHUNK_SIZE * TILE_SIZE + moveXPos, 
+            0, 
+            (translation[1] - moveY) * CHUNK_SIZE * TILE_SIZE + moveYPos
+            );
         beginShape(QUADS);
         float o, a1, a2, d;
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -120,6 +121,14 @@ class TerrainChunk {
             }
         }
         endShape();
+        popMatrix();
+    }
+
+
+    public void renderTerrainRet() {
+        pushMatrix();
+        translate(translation[0] * CHUNK_SIZE * TILE_SIZE, 0, translation[1] * CHUNK_SIZE * TILE_SIZE);
+        shape(chunk);
         popMatrix();
     }
 
@@ -173,8 +182,8 @@ class TerrainChunk {
         for (int i = 0; i < CHUNK_SIZE; i++) {
             for (int j = 0; j < CHUNK_SIZE; j++) {
                 float noiseHeight = noise(
-                    ((terrainChunkOffset[0] + chunkCoord[0]) * (CHUNK_SIZE - 1) + i) / SCALE,
-                    ((terrainChunkOffset[1] + chunkCoord[1]) * (CHUNK_SIZE - 1) + j) / SCALE
+                    ((GLOBAL_TERRAIN_OFFSET[0] + translation[0]) * (CHUNK_SIZE - 1) + i) / SCALE,
+                    ((GLOBAL_TERRAIN_OFFSET[1] + translation[1]) * (CHUNK_SIZE - 1) + j) / SCALE
                 );
                 // noiseHeight = -AMPLITUDE * (noiseHeight - 0.5);
                 noiseHeight = AMPLITUDE * noiseHeight;
