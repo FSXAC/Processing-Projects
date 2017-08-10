@@ -23,5 +23,5 @@ void main() {
 
 	float k = clamp(map(speed, 50.0, 100.0, 0.0, 1.0), 0.0, 1.0);
 
-	gl_FragColor =  k * normalColor + (1.0 - k) * v_vertColor;
+	gl_FragColor =  k * normalColor + (1.0 - k) * v_vertColor;	
 }
