@@ -6,6 +6,8 @@ class Player {
     public final float TURN_SENSITIVITY = 15;
     
     private float speed;
+    private float speed_tgt;
+    private float acceleration;
     private float turnValue;
     
     private PShape playerModel;
@@ -17,7 +19,8 @@ class Player {
     PShader playerShader;
     
     Player() {
-        speed = 30;
+        speed_tgt = 30;
+        acceleration = 1;
         
         // create geometry of the ship
         if (usingExternShape) {
@@ -67,7 +70,10 @@ class Player {
     private void update() {
         // update any private members here
         turnValue = lerp(turnValue, mouseX, 0.3);
-        speed = lerp(speed, map(mouseY, 0, height, 100, 10), 0.1);
+        // speed = lerp(speed, map(mouseY, 0, height, 100, 10), 0.1);
+        acceleration = map(mouseY, 0, height, 1.0, -1.0);
+        speed_tgt = constrain(speed_tgt + acceleration, 10, 100);
+        speed = lerp(speed, speed_tgt, 0.1);
     }
     
     private void renderGeometry() {

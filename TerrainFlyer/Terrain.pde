@@ -28,7 +28,8 @@ class Terrain {
     void draw() {
         // load shader
         this.terrainShader.set("speed", player.getSpeed());
-        shader(this.terrainShader);
+
+        if (FANCY_SHADERS) shader(this.terrainShader);
         pushMatrix();
         rotateX(PI / 2);
         translate(-0.5 * chunkWidth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE, -TerrainChunk.AMPLITUDE*0.0, -1.0 * chunkDepth * TerrainChunk.CHUNK_SIZE * TerrainChunk.TILE_SIZE);
@@ -44,7 +45,7 @@ class Terrain {
         popMatrix();
 
         // reset shader
-        resetShader();
+        if (FANCY_SHADERS) resetShader();
     }
 
     void checkChunkCoords() {

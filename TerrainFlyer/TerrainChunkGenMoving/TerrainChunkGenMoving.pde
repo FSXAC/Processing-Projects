@@ -1,6 +1,10 @@
-import peasy.*;
+import queasycam.*;
 
-PeasyCam cam;
+//import peasy.*;
+//PeasyCam cam;
+
+QueasyCam cam;
+
 ArrayList<TerrainChunk> tChunks = new ArrayList<TerrainChunk>();
 int r = 0;
 float[] GLOBAL_TERRAIN_OFFSET = { 0, 0 };
@@ -12,14 +16,32 @@ int moveYPos = 0;
 
 void setup() {
     size(1280, 800, P3D);
+    //fullScreen(P3D);
 
-    cam = new PeasyCam(this, 100);
-    cam.setMinimumDistance(50);
-    cam.setMaximumDistance(500);
-    cam.setSuppressRollRotationMode();
+    //cam = new PeasyCam(this, 100);
+    //cam.setMinimumDistance(50);
+    //cam.setMaximumDistance(500);
+    //cam.setSuppressRollRotationMode();
+    cam = new QueasyCam(this);
+    cam.speed = 5;
+    cam.sensitivity = 0.5;
+    noCursor();
     
     generateChunks(0, 0, 10, 10);
 }
+
+int fov = 60;
+void mouseWheel(MouseEvent event) {
+    float e = event.getCount();
+    if (e > 0) {
+        if (fov < 120) fov += 5;
+    } else {
+        if (fov > 30) fov -= 5;
+    }
+    perspective(radians(fov), width / height, 0.1, 10000);
+    println(fov);
+}
+
 
 void draw() {
     background(#6589A7);
