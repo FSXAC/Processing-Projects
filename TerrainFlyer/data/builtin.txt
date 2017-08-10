@@ -21,8 +21,9 @@ uniform mat4 modelview || modelViewMatrix
 uniform mat4 projection || projectionMatrix
 
 uniform ?? viewport
-uniform ?? resolution
+uniform vec2 resolution
 uniform ?? ppixels
+uniform vec2 mouse
 
 uniform mat3 normalMatrix
 
