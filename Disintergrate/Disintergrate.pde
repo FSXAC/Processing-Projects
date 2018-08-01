@@ -3,16 +3,19 @@ import peasy.*;
 
 PeasyCam cam;
 
-String IMG_PATH = "jojonut.png";
-
-float PIXEL_SIZE = 2;
+// Constants
+final String IMG_PATH = "dog.jpg";
+final boolean FILL_IMG = false;
+final float PIXEL_SIZE = 5;
 
 final float MAX_AMPLITUDE = -500;
 
 final boolean AUTO_PLAY = true;
-float g_autoplay_x = 0;
 
+float g_autoplay_x = 0;
 boolean g_recording = false;
+
+PImage sampleImage;
 
 void setup() {
 	size(1280, 900, P3D);
@@ -26,6 +29,11 @@ void setup() {
 	if (cam == null) {
 		noLoop();
 	}
+	
+	// Set up image
+	sampleImage = loadImage(IMG_PATH);
+	float scaleFactor = getImageConstrainFitFactor(sampleImage.width, sampleImage.height, width, height);
+	sampleImage.resize(int(sampleImage.width * scaleFactor), int(sampleImage.height * scaleFactor));
 }
 
 void draw() {
@@ -61,12 +69,6 @@ void draw() {
 }
 
 void drawImage() {
-	PImage sampleImage = loadImage(IMG_PATH);
-
-	// Fill the image into the screen width and height
-	float scaleFactor = getImageConstrainFitFactor(sampleImage.width, sampleImage.height, width, height);
-	sampleImage.resize(int(sampleImage.width * scaleFactor), int(sampleImage.height * scaleFactor));
-
 	// Draw image at the center of the screen
 	float cornerX = width / 2 - sampleImage.width / 2;
 	float cornerY = height / 2 - sampleImage.height / 2;
@@ -91,7 +93,6 @@ float noiseCentered(float x, float y, float amp) {
 	return amp * noise(x, y) - (amp / 2);
 }
 
-final boolean FILL_IMG = false;
 float getImageConstrainFitFactor(float imgWidth, float imgHeight, float screenWidth, float screenHeight) {
 	final float screenRatio = screenWidth / screenHeight;
 	final float imgRatio = imgWidth / imgHeight;
