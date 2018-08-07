@@ -4,13 +4,13 @@ import peasy.*;
 PeasyCam cam;
 
 // Constants
-final String IMG_PATH = "dog.jpg";
+final String IMG_PATH = "bug.png";
 final boolean FILL_IMG = false;
-final float PIXEL_SIZE = 5;
+final float PIXEL_SIZE = 1;
 
 final float MAX_AMPLITUDE = -500;
 
-final boolean AUTO_PLAY = true;
+final boolean AUTO_PLAY = false;
 
 float g_autoplay_x = 0;
 boolean g_recording = false;
@@ -101,21 +101,17 @@ float getImageConstrainFitFactor(float imgWidth, float imgHeight, float screenWi
 		// Image is wider than the screen; constrain by width
 		if (imgWidth > screenWidth || FILL_IMG) {
 			return screenWidth / imgWidth;
-		} else {
-			return 1;
 		}
 	} else {
 		// Constrain by height
 		if (imgHeight > screenHeight || FILL_IMG) {
 			return screenHeight / imgHeight;
-		} else {
-			return 1;
 		}
 	}
+	return 1;
 }
 
 float disintegrateAmplitude(float x, float y, float maxX, float maxY) {
-
 	if (AUTO_PLAY) {
 		float amp = MAX_AMPLITUDE * exp(-x * x * g_autoplay_x);
 		return noiseCentered(
@@ -132,10 +128,8 @@ void keyPressed() {
 	if (keyCode == 82) {	// [r]
 		if (g_recording) {
 			g_recording = false;
-			// frameRate(60);
 		} else {
 			g_recording = true;
-			// frameRate(10);
 		}
 	}
 }
